@@ -11,6 +11,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { View } from "react-native";
+import { AppointmentsProvider } from "./context/AppointmentsContext";
 import { UserProvider } from "./context/UserContext";
 
 SplashScreen.preventAutoHideAsync();
@@ -35,16 +36,18 @@ export default function Layout() {
 
   return (
     <UserProvider>
-      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: "slide_from_right"
-          }}>
-          <Stack.Screen name="splash" options={{ title: "Splash" }} />
-          <Stack.Screen name="auth" options={{ title: "Authentication" }} />
-        </Stack>
-      </View>
+      <AppointmentsProvider>
+        <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              animation: "slide_from_right"
+            }}>
+            <Stack.Screen name="splash" options={{ title: "Splash" }} />
+            <Stack.Screen name="auth" options={{ title: "Authentication" }} />
+          </Stack>
+        </View>
+      </AppointmentsProvider>
     </UserProvider>
   );
 }

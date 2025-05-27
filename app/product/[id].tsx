@@ -136,9 +136,14 @@ export default function ProductDetails() {
       date: selectedDate.toISOString().split("T")[0],
       time: selectedTime,
       service: product.name,
-      specialist: "Marie Dupont", // À remplacer par le vrai spécialiste
-      status: "upcoming" as const,
-      productId: product.id
+      status: "pending" as const,
+      price: product.price,
+      duration: product.duration,
+      stylist: {
+        id: "1",
+        name: "Marie Dupont",
+        image: "https://example.com/marie.jpg"
+      }
     };
 
     // Ajouter le rendez-vous via le contexte

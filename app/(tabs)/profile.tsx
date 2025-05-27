@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import {
   Animated,
+  ImageBackground,
   Platform,
   StyleSheet,
   Text,
@@ -22,13 +23,19 @@ export default function ProfileScreen() {
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 100],
-    outputRange: [200, 100],
+    outputRange: [250, 120],
     extrapolate: "clamp"
   });
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
-    outputRange: [1, 0.9],
+    outputRange: [1, 0.95],
+    extrapolate: "clamp"
+  });
+
+  const avatarScale = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0.8],
     extrapolate: "clamp"
   });
 
@@ -36,17 +43,20 @@ export default function ProfileScreen() {
     {
       icon: "calendar-outline",
       label: "Rendez-vous",
-      value: "12"
+      value: "12",
+      color: "#FF6347"
     },
     {
       icon: "heart-outline",
       label: "Favoris",
-      value: "8"
+      value: "8",
+      color: "#FF69B4"
     },
     {
       icon: "star-outline",
       label: "Avis",
-      value: "15"
+      value: "15",
+      color: "#FFD700"
     }
   ];
 
@@ -54,37 +64,44 @@ export default function ProfileScreen() {
     {
       icon: "calendar-outline",
       title: "Mes rendez-vous",
-      onPress: () => router.push("/(tabs)/calendar")
+      onPress: () => router.push("/(tabs)/calendar"),
+      color: "#FF6347"
     },
     {
       icon: "heart-outline",
       title: "Favoris",
-      onPress: () => router.push("/favorites")
+      onPress: () => router.push("/favorites"),
+      color: "#FF69B4"
     },
     {
       icon: "star-outline",
       title: "Mes avis",
-      onPress: () => router.push("/reviews")
+      onPress: () => router.push("/reviews"),
+      color: "#FFD700"
     },
     {
       icon: "card-outline",
       title: "Mes cartes",
-      onPress: () => router.push("/cards")
+      onPress: () => router.push("/cards"),
+      color: "#4CAF50"
     },
     {
       icon: "notifications-outline",
       title: "Notifications",
-      onPress: () => router.push("/notifications")
+      onPress: () => router.push("/notifications"),
+      color: "#2196F3"
     },
     {
       icon: "settings-outline",
       title: "Paramètres",
-      onPress: () => router.push("/settings")
+      onPress: () => router.push("/settings"),
+      color: "#9C27B0"
     },
     {
       icon: "help-circle-outline",
       title: "Aide",
-      onPress: () => router.push("/help")
+      onPress: () => router.push("/help"),
+      color: "#FF9800"
     }
   ];
 
@@ -98,23 +115,32 @@ export default function ProfileScreen() {
             opacity: headerOpacity
           }
         ]}>
-        <View style={styles.headerContent}>
-          <Avatar size={100} image={user?.profileImage} name={user?.name} />
-          <Text style={[styles.name, { fontFamily: fonts.semiBold }]}>
-            {user?.name || "Utilisateur"}
-          </Text>
-          <Text style={[styles.email, { fontFamily: fonts.regular }]}>
-            {user?.email || "email@example.com"}
-          </Text>
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => router.push("/edit-profile")}>
-            <Ionicons name="pencil" size={16} color="#007AFF" />
-            <Text style={[styles.editButtonText, { fontFamily: fonts.medium }]}>
-              Modifier le profil
+        <ImageBackground
+          source={require("../../assets/images/profile-bg.jpg")}
+          style={styles.headerBackground}
+          blurRadius={3}>
+          <View style={styles.headerOverlay} />
+          <View style={styles.headerContent}>
+            <Animated.View style={{ transform: [{ scale: avatarScale }] }}>
+              <Avatar size={120} image={user?.profileImage} name={user?.name} />
+            </Animated.View>
+            <Text style={[styles.name, { fontFamily: fonts.semiBold }]}>
+              {user?.name || "Utilisateur"}
             </Text>
-          </TouchableOpacity>
-        </View>
+            <Text style={[styles.email, { fontFamily: fonts.regular }]}>
+              {user?.email || "email@example.com"}
+            </Text>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => router.push("/edit-profile")}>
+              <Ionicons name="pencil" size={16} color="#FFFFFF" />
+              <Text
+                style={[styles.editButtonText, { fontFamily: fonts.medium }]}>
+                Modifier le profil
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
       </Animated.View>
 
       <Animated.ScrollView
@@ -127,8 +153,22 @@ export default function ProfileScreen() {
         <View style={styles.statsContainer}>
           {stats.map((stat, index) => (
             <View key={index} style={styles.statItem}>
-              <Ionicons name={stat.icon as any} size={24} color="#007AFF" />
-              <Text style={[styles.statValue, { fontFamily: fonts.semiBold }]}>
+              <View
+                style={[
+                  styles.statIconContainer,
+                  { backgroundColor: `${stat.color}15` }
+                ]}>
+                <Ionicons
+                  name={stat.icon as any}
+                  size={24}
+                  color={stat.color}
+                />
+              </View>
+              <Text
+                style={[
+                  styles.statValue,
+                  { fontFamily: fonts.semiBold, color: stat.color }
+                ]}>
                 {stat.value}
               </Text>
               <Text style={[styles.statLabel, { fontFamily: fonts.regular }]}>
@@ -145,8 +185,16 @@ export default function ProfileScreen() {
               style={styles.menuItem}
               onPress={item.onPress}>
               <View style={styles.menuItemLeft}>
-                <View style={styles.iconContainer}>
-                  <Ionicons name={item.icon as any} size={22} color="#007AFF" />
+                <View
+                  style={[
+                    styles.iconContainer,
+                    { backgroundColor: `${item.color}15` }
+                  ]}>
+                  <Ionicons
+                    name={item.icon as any}
+                    size={22}
+                    color={item.color}
+                  />
                 </View>
                 <Text
                   style={[styles.menuItemText, { fontFamily: fonts.medium }]}>
@@ -177,12 +225,13 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5"
+    backgroundColor: "#f8f8f8"
   },
   header: {
     backgroundColor: "#fff",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
+    overflow: "hidden",
     ...Platform.select({
       ios: {
         shadowColor: "#000",
@@ -195,6 +244,14 @@ const styles = StyleSheet.create({
       }
     })
   },
+  headerBackground: {
+    flex: 1,
+    width: "100%"
+  },
+  headerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.3)"
+  },
   headerContent: {
     flex: 1,
     alignItems: "center",
@@ -203,27 +260,45 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: fontSizes["2xl"],
-    color: "#333",
-    marginTop: 15
+    color: "#fff",
+    marginTop: 15,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3
   },
   email: {
     fontSize: fontSizes.base,
-    color: "#666",
-    marginTop: 5
+    color: "#fff",
+    marginTop: 5,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3
   },
   editButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F0F7FF",
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginTop: 15
+    backgroundColor: "#FF6347",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
+    marginTop: 15,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4
+      },
+      android: {
+        elevation: 5
+      }
+    })
   },
   editButtonText: {
-    color: "#007AFF",
+    color: "#FFFFFF",
     fontSize: fontSizes.sm,
-    marginLeft: 5
+    marginLeft: 5,
+    fontWeight: "600"
   },
   content: {
     flex: 1
@@ -234,7 +309,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginHorizontal: 16,
     marginTop: 20,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 20,
     ...Platform.select({
       ios: {
@@ -251,22 +326,28 @@ const styles = StyleSheet.create({
   statItem: {
     alignItems: "center"
   },
+  statIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8
+  },
   statValue: {
     fontSize: fontSizes.xl,
-    color: "#333",
-    marginTop: 5
+    marginBottom: 4
   },
   statLabel: {
-    fontSize: fontSizes.xs,
-    color: "#666",
-    marginTop: 2
+    fontSize: fontSizes.sm,
+    color: "#666"
   },
   menuContainer: {
     backgroundColor: "#fff",
     marginHorizontal: 16,
     marginTop: 20,
-    borderRadius: 12,
-    overflow: "hidden",
+    borderRadius: 16,
+    padding: 10,
     ...Platform.select({
       ios: {
         shadowColor: "#000",
@@ -283,19 +364,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0"
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 12
   },
   menuItemLeft: {
     flexDirection: "row",
     alignItems: "center"
   },
   iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: "#F0F7FF",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12
@@ -312,8 +392,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 20,
     marginBottom: 30,
-    padding: 16,
-    borderRadius: 12,
+    padding: 15,
+    borderRadius: 16,
     ...Platform.select({
       ios: {
         shadowColor: "#000",

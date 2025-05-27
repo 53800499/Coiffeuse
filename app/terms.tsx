@@ -22,16 +22,17 @@ export default function TermsScreen() {
           style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.title}>Conditions d'utilisation</Text>
+        <Text style={styles.title}>Conditions d{"'"}utilisation</Text>
       </View>
 
       <View style={styles.content}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>1. Acceptation des conditions</Text>
           <Text style={styles.text}>
-            En utilisant l'application Coiffeuse, vous acceptez d'être lié par
-            les présentes conditions d'utilisation. Si vous n'acceptez pas ces
-            conditions, veuillez ne pas utiliser l'application.
+            En utilisant l{"'"}application Coiffeuse, vous acceptez d{"'"}être
+            lié par les présentes conditions d{"'"}utilisation. Si vous n{"'"}
+            acceptez pas ces conditions, veuillez ne pas utiliser l{"'"}
+            application.
           </Text>
         </View>
 
@@ -39,8 +40,8 @@ export default function TermsScreen() {
           <Text style={styles.sectionTitle}>2. Description du service</Text>
           <Text style={styles.text}>
             Coiffeuse est une plateforme qui met en relation des clients avec
-            des professionnels de la coiffure à domicile. L'application facilite
-            la réservation de services de coiffure et la gestion des
+            des professionnels de la coiffure à domicile. L{"'"}application
+            facilite la réservation de services de coiffure et la gestion des
             rendez-vous.
           </Text>
         </View>
@@ -48,8 +49,8 @@ export default function TermsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>3. Compte utilisateur</Text>
           <Text style={styles.text}>
-            Pour utiliser certaines fonctionnalités de l'application, vous devez
-            créer un compte. Vous êtes responsable de maintenir la
+            Pour utiliser certaines fonctionnalités de l{"'"}application, vous
+            devez créer un compte. Vous êtes responsable de maintenir la
             confidentialité de vos informations de connexion et de toutes les
             activités qui se produisent sous votre compte.
           </Text>
@@ -78,9 +79,9 @@ export default function TermsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>6. Propriété intellectuelle</Text>
           <Text style={styles.text}>
-            Tous les droits de propriété intellectuelle relatifs à l'application
-            et à son contenu appartiennent à Coiffeuse ou à ses concédants de
-            licence.
+            Tous les droits de propriété intellectuelle relatifs à l{"'"}
+            application et à son contenu appartiennent à Coiffeuse ou à ses
+            concédants de licence.
           </Text>
         </View>
 
@@ -89,9 +90,9 @@ export default function TermsScreen() {
             7. Limitation de responsabilité
           </Text>
           <Text style={styles.text}>
-            Coiffeuse n'est pas responsable des dommages indirects, accessoires,
-            spéciaux ou consécutifs résultant de l'utilisation ou de
-            l'impossibilité d'utiliser l'application.
+            Coiffeuse n{"'"}est pas responsable des dommages indirects,
+            accessoires, spéciaux ou consécutifs résultant de l{"'"}utilisation
+            ou de l{"'"}impossibilité d{"'"}utiliser l{"'"}application.
           </Text>
         </View>
 
@@ -102,7 +103,7 @@ export default function TermsScreen() {
           <Text style={styles.text}>
             Nous nous réservons le droit de modifier ces conditions à tout
             moment. Les modifications entrent en vigueur dès leur publication
-            dans l'application.
+            dans l{"'"}application.
           </Text>
         </View>
 
@@ -115,7 +116,7 @@ export default function TermsScreen() {
         </View>
 
         <Text style={styles.lastUpdated}>
-          Dernière mise à jour : 1er mars 2024
+          Dernière mise à jour : 26 mai 2025
         </Text>
       </View>
     </ScrollView>
@@ -125,7 +126,8 @@ export default function TermsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5"
+    backgroundColor: "#f5f5f5",
+    paddingTop: 40,
   },
   header: {
     flexDirection: "row",

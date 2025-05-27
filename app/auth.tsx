@@ -70,7 +70,7 @@ const AuthScreen = () => {
                   styles.switchButtonText,
                   isLoginView && styles.activeSwitchButtonText
                 ]}>
-                Login
+                Se connecter
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -84,7 +84,7 @@ const AuthScreen = () => {
                   styles.switchButtonText,
                   !isLoginView && styles.activeSwitchButtonText
                 ]}>
-                Sign-up
+                S{"'"}inscrire
               </Text>
             </TouchableOpacity>
           </View>
@@ -93,7 +93,7 @@ const AuthScreen = () => {
           {isLoginView ? (
             // Formulaire de connexion (Login)
             <View style={styles.formContainer}>
-              <Text style={styles.formTitle}>Login</Text>
+              <Text style={styles.formTitle}>Se connecter</Text>
 
               <TextInput
                 style={styles.input}
@@ -106,7 +106,7 @@ const AuthScreen = () => {
               />
               <TextInput
                 style={styles.input}
-                placeholder="Password"
+                placeholder="Mot de passe"
                 placeholderTextColor="#888"
                 secureTextEntry
                 value={password}
@@ -115,22 +115,24 @@ const AuthScreen = () => {
 
               {/* Lien Forgot Password? */}
               <TouchableOpacity>
-                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                <Text style={styles.forgotPasswordText}>
+                  Mot de passe oublier
+                </Text>
               </TouchableOpacity>
 
               {/* Bouton Login */}
               <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>Se connecter</Text>
               </TouchableOpacity>
             </View>
           ) : (
             // Formulaire d'inscription (Sign-up)
             <View style={styles.formContainer}>
-              <Text style={styles.formTitle}>Sign-up</Text>
+              <Text style={styles.formTitle}>S{"'"}inscrire</Text>
 
               <TextInput
                 style={styles.input}
-                placeholder="Name"
+                placeholder="Nom"
                 placeholderTextColor="#888"
                 autoCapitalize="words"
                 value={name}
@@ -147,7 +149,7 @@ const AuthScreen = () => {
               />
               <TextInput
                 style={styles.input}
-                placeholder="Password"
+                placeholder="Mot de passe"
                 placeholderTextColor="#888"
                 secureTextEntry
                 value={password}
@@ -155,7 +157,7 @@ const AuthScreen = () => {
               />
               <TextInput
                 style={styles.input}
-                placeholder="Confirm Password"
+                placeholder="Confirmer le mot de passe"
                 placeholderTextColor="#888"
                 secureTextEntry
                 value={confirmPassword}
@@ -180,7 +182,7 @@ const AuthScreen = () => {
 
               {/* Bouton Sign-up */}
               <TouchableOpacity style={styles.button} onPress={handleSignup}>
-                <Text style={styles.buttonText}>Sign-up</Text>
+                <Text style={styles.buttonText}>S{"'"}inscrire</Text>
               </TouchableOpacity>
             </View>
           )}

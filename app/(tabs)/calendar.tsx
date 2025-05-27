@@ -1,155 +1,265 @@
 /** @format */
 
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View
 } from "react-native";
+import { Calendar } from "react-native-calendars";
 import { useAppointments } from "../context/AppointmentsContext";
 import { fonts, fontSizes } from "../theme/fonts";
 
-const timeSlots = [
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00"
-];
+interface Appointment {
+  id: string;
+  date: string;
+  time: string;
+  service: string;
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  price: string;
+  duration: string;
+  stylist: {
+    id: string;
+    name: string;
+    image?: string;
+  };
+}
 
 export default function CalendarScreen() {
   const router = useRouter();
-  const { appointments } = useAppointments();
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const { appointments, cancelAppointment } = useAppointments();
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
 
-  const handleDateSelect = (date: string) => {
-    setSelectedDate(date);
-    setSelectedTime(null);
-  };
-
-  const handleTimeSelect = (time: string) => {
-    setSelectedTime(time);
-  };
-
-  const handleBook = () => {
-    if (!selectedDate || !selectedTime) {
-      alert("Veuillez sélectionner une date et une heure");
-      return;
+  const markedDates = appointments.reduce((acc, appointment) => {
+    if (
+      appointment.status === "pending" ||
+      appointment.status === "confirmed"
+    ) {
+      acc[appointment.date] = {
+        marked: true,
+        dotColor: "#FF6347"
+      };
     }
-    router.push({
-      pathname: "/select-product",
-      params: {
-        date: selectedDate,
-        time: selectedTime
-      }
-    });
+    return acc;
+  }, {} as { [key: string]: { marked: boolean; dotColor: string } });
+
+  const handleCancelAppointment = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setShowCancelModal(true);
   };
+
+  const confirmCancelAppointment = () => {
+    if (selectedAppointment) {
+      cancelAppointment(selectedAppointment.id);
+      setShowCancelModal(false);
+      setSelectedAppointment(null);
+    }
+  };
+
+  const handleBookNewAppointment = () => {
+    router.push("/select-product");
+  };
+
+  const renderAppointment = (appointment: Appointment) => (
+    <View key={appointment.id} style={styles.appointmentCard}>
+      <View style={styles.appointmentTimeContainer}>
+        <View style={styles.timeBadge}>
+          <Ionicons name="time" size={16} color="#FF6347" />
+          <Text style={[styles.appointmentTime, { fontFamily: fonts.medium }]}>
+            {appointment.time}
+          </Text>
+        </View>
+        <View
+          style={[
+            styles.statusBadge,
+            {
+              backgroundColor:
+                appointment.status === "pending" ? "#FFF3E0" : "#E8F5E9"
+            }
+          ]}>
+          <Text
+            style={[
+              styles.statusText,
+              {
+                color: appointment.status === "pending" ? "#FF9800" : "#4CAF50",
+                fontFamily: fonts.medium
+              }
+            ]}>
+            {appointment.status === "pending" ? "En attente" : "Confirmé"}
+          </Text>
+        </View>
+      </View>
+      <View style={styles.appointmentDetails}>
+        <Text style={[styles.serviceName, { fontFamily: fonts.semiBold }]}>
+          {appointment.service}
+        </Text>
+        <View style={styles.stylistContainer}>
+          <Ionicons name="person" size={16} color="#666" />
+          <Text style={[styles.specialistName, { fontFamily: fonts.regular }]}>
+            {appointment.stylist.name}
+          </Text>
+        </View>
+        <View style={styles.priceContainer}>
+          <Text
+            style={[styles.appointmentPrice, { fontFamily: fonts.semiBold }]}>
+            {appointment.price}
+          </Text>
+          <View style={styles.durationBadge}>
+            <Ionicons name="hourglass-outline" size={14} color="#666" />
+            <Text style={[styles.durationText, { fontFamily: fonts.regular }]}>
+              {appointment.duration}
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.appointmentActions}>
+        {appointment.status === "pending" && (
+          <TouchableOpacity
+            style={[styles.actionButton, styles.paymentButton]}
+            onPress={() => {
+              // Ici, vous pouvez ajouter la logique de paiement MTN MoMo
+              alert("Paiement MTN MoMo en cours...");
+            }}>
+            <Ionicons name="wallet" size={20} color="#FF6347" />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={[styles.actionButton, styles.cancelButton]}
+          onPress={() => handleCancelAppointment(appointment)}>
+          <Ionicons name="close-circle" size={20} color="#FF6347" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  const filteredAppointments = appointments.filter(
+    (appointment) =>
+      appointment.date === selectedDate &&
+      (appointment.status === "pending" || appointment.status === "confirmed")
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={[styles.title, { fontFamily: fonts.semiBold }]}>
-          Calendrier
+          Rendez-vous
         </Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleBookNewAppointment}>
+          <Ionicons name="add-circle" size={24} color="#FF6347" />
+        </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content}>
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { fontFamily: fonts.medium }]}>
-            Sélectionner une date
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.datesContainer}>
-            {Array.from({ length: 14 }, (_, i) => {
-              const date = new Date();
-              date.setDate(date.getDate() + i);
-              const dateStr = date.toISOString().split("T")[0];
-              const isSelected = selectedDate === dateStr;
+      <View style={styles.calendarContainer}>
+        <Calendar
+          onDayPress={(day) => setSelectedDate(day.dateString)}
+          markedDates={{
+            ...markedDates,
+            [selectedDate]: {
+              selected: true,
+              marked: markedDates[selectedDate]?.marked,
+              dotColor: "#FF6347"
+            }
+          }}
+          theme={{
+            todayTextColor: "#FF6347",
+            selectedDayBackgroundColor: "#FF6347",
+            selectedDayTextColor: "#fff",
+            dotColor: "#FF6347"
+          }}
+        />
+      </View>
 
-              return (
-                <TouchableOpacity
-                  key={dateStr}
-                  style={[
-                    styles.dateButton,
-                    isSelected && styles.dateButtonSelected
-                  ]}
-                  onPress={() => handleDateSelect(dateStr)}>
-                  <Text
-                    style={[
-                      styles.dateText,
-                      { fontFamily: fonts.medium },
-                      isSelected && styles.dateTextSelected
-                    ]}>
-                    {date.toLocaleDateString("fr-FR", {
-                      weekday: "short",
-                      day: "numeric"
-                    })}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+      <View style={styles.appointmentsContainer}>
+        <View style={styles.sectionHeader}>
+          <Text style={[styles.sectionTitle, { fontFamily: fonts.medium }]}>
+            Rendez-vous du {new Date(selectedDate).toLocaleDateString("fr-FR")}
+          </Text>
         </View>
 
-        {selectedDate && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { fontFamily: fonts.medium }]}>
-              Sélectionner une heure
-            </Text>
-            <View style={styles.timeGrid}>
-              {timeSlots.map((time) => {
-                const isSelected = selectedTime === time;
-                const isBooked = appointments.some(
-                  (app) =>
-                    app.date === selectedDate &&
-                    app.time === time &&
-                    app.status !== "cancelled"
-                );
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {filteredAppointments.length > 0 ? (
+            filteredAppointments.map(renderAppointment)
+          ) : (
+            <View style={styles.noAppointments}>
+              <Text
+                style={[
+                  styles.noAppointmentsText,
+                  { fontFamily: fonts.regular }
+                ]}>
+                Aucun rendez-vous pour cette date
+              </Text>
+              <TouchableOpacity
+                style={styles.bookButton}
+                onPress={handleBookNewAppointment}>
+                <Text
+                  style={[styles.bookButtonText, { fontFamily: fonts.medium }]}>
+                  Prendre rendez-vous
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+      </View>
 
-                return (
-                  <TouchableOpacity
-                    key={time}
-                    style={[
-                      styles.timeButton,
-                      isSelected && styles.timeButtonSelected,
-                      isBooked && styles.timeButtonBooked
-                    ]}
-                    onPress={() => !isBooked && handleTimeSelect(time)}
-                    disabled={isBooked}>
-                    <Text
-                      style={[
-                        styles.timeText,
-                        { fontFamily: fonts.medium },
-                        isSelected && styles.timeTextSelected,
-                        isBooked && styles.timeTextBooked
-                      ]}>
-                      {time}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+      <Modal
+        visible={showCancelModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowCancelModal(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={[styles.modalTitle, { fontFamily: fonts.semiBold }]}>
+              Annuler le rendez-vous ?
+            </Text>
+            <Text style={[styles.modalText, { fontFamily: fonts.regular }]}>
+              Êtes-vous sûr de vouloir annuler ce rendez-vous ?
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setShowCancelModal(false)}>
+                <Text
+                  style={[
+                    styles.modalButtonText,
+                    { fontFamily: fonts.medium }
+                  ]}>
+                  Non
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={confirmCancelAppointment}>
+                <Text
+                  style={[
+                    styles.modalButtonText,
+                    styles.confirmButtonText,
+                    { fontFamily: fonts.medium }
+                  ]}>
+                  Oui, annuler
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
-        )}
+        </View>
+      </Modal>
 
-        {selectedDate && selectedTime && (
-          <TouchableOpacity style={styles.bookButton} onPress={handleBook}>
-            <Text style={[styles.bookButtonText, { fontFamily: fonts.medium }]}>
-              Réserver
-            </Text>
-          </TouchableOpacity>
-        )}
-      </ScrollView>
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={handleBookNewAppointment}>
+        <Ionicons name="add" size={30} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -157,89 +267,238 @@ export default function CalendarScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5"
+    backgroundColor: "#f8f8f8",
+    paddingTop: 40
   },
   header: {
-    padding: 20,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0"
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
+    backgroundColor: "white"
   },
   title: {
     fontSize: fontSizes["2xl"],
     color: "#333"
   },
-  content: {
-    flex: 1
+  addButton: {
+    padding: 5
   },
-  section: {
-    backgroundColor: "#fff",
-    marginTop: 20,
-    padding: 20
+  calendarContainer: {
+    backgroundColor: "white",
+    padding: 10,
+    marginBottom: 10
+  },
+  appointmentsContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20
   },
   sectionTitle: {
     fontSize: fontSizes.lg,
-    color: "#333",
-    marginBottom: 15
+    color: "#333"
   },
-  datesContainer: {
-    flexDirection: "row"
-  },
-  dateButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    backgroundColor: "#f0f0f0",
-    marginRight: 10
-  },
-  dateButtonSelected: {
-    backgroundColor: "#007AFF"
-  },
-  dateText: {
-    fontSize: fontSizes.base,
-    color: "#666"
-  },
-  dateTextSelected: {
-    color: "#fff"
-  },
-  timeGrid: {
+  appointmentCard: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    marginHorizontal: -5
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 15,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3
   },
-  timeButton: {
-    width: "30%",
-    margin: "1.66%",
-    paddingVertical: 12,
-    borderRadius: 10,
-    backgroundColor: "#f0f0f0",
+  appointmentTimeContainer: {
+    marginRight: 15,
     alignItems: "center"
   },
-  timeButtonSelected: {
-    backgroundColor: "#007AFF"
+  timeBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF5F5",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    marginBottom: 8
   },
-  timeButtonBooked: {
-    backgroundColor: "#e0e0e0"
+  appointmentTime: {
+    fontSize: fontSizes.sm,
+    color: "#FF6347",
+    marginLeft: 4
   },
-  timeText: {
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12
+  },
+  statusText: {
+    fontSize: fontSizes.xs,
+    textTransform: "uppercase"
+  },
+  appointmentDetails: {
+    flex: 1
+  },
+  serviceName: {
     fontSize: fontSizes.base,
-    color: "#666"
+    color: "#333",
+    marginBottom: 6
   },
-  timeTextSelected: {
-    color: "#fff"
+  stylistContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8
   },
-  timeTextBooked: {
-    color: "#999"
+  specialistName: {
+    fontSize: fontSizes.sm,
+    color: "#666",
+    marginLeft: 4
+  },
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  appointmentPrice: {
+    fontSize: fontSizes.base,
+    color: "#FF6347"
+  },
+  durationBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12
+  },
+  durationText: {
+    fontSize: fontSizes.xs,
+    color: "#666",
+    marginLeft: 4
+  },
+  appointmentActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 10
+  },
+  actionButton: {
+    padding: 8,
+    marginLeft: 5,
+    backgroundColor: "#F5F5F5",
+    borderRadius: 20,
+    width: 36,
+    height: 36,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2
+  },
+  paymentButton: {
+    backgroundColor: "#FFF5F5"
+  },
+  cancelButton: {
+    backgroundColor: "#FFF5F5"
+  },
+  noAppointments: {
+    alignItems: "center",
+    padding: 20
+  },
+  noAppointmentsText: {
+    fontSize: fontSizes.base,
+    color: "#666",
+    marginBottom: 20
   },
   bookButton: {
-    backgroundColor: "#007AFF",
-    margin: 20,
-    padding: 15,
-    borderRadius: 25,
-    alignItems: "center"
+    backgroundColor: "#FF6347",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20
   },
   bookButtonText: {
     color: "#fff",
     fontSize: fontSizes.base
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    width: "80%",
+    alignItems: "center"
+  },
+  modalTitle: {
+    fontSize: fontSizes.xl,
+    color: "#333",
+    marginBottom: 10
+  },
+  modalText: {
+    fontSize: fontSizes.base,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%"
+  },
+  modalButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 10,
+    marginHorizontal: 5
+  },
+  confirmButton: {
+    backgroundColor: "#FF6347"
+  },
+  confirmButtonText: {
+    color: "#fff"
+  },
+  floatingButton: {
+    position: "absolute",
+    right: 20,
+    bottom: 20,
+    backgroundColor: "#FF6347",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  modalButtonText: {
+    fontSize: fontSizes.base,
+    color: "#333",
+    textAlign: "center",
+    fontFamily: fonts.medium
   }
 });
