@@ -24,13 +24,13 @@ const SplashScreen = () => {
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.overlay} />
       <View style={styles.container}>
-        <Text style={styles.title}>Look Awesome &amp; Save Some</Text>
+        <Text style={styles.title}>Bienvenu dans notre salon de coiffure</Text>
         <Text style={styles.subtitle}>
-          Step into a world of personalized\n services that enhance your
-          beauty\n and well-being.
+          Faitez-vous belle et beau avec nos services de coiffure
+          professionnels. Réservez votre rendez-vous dès maintenant !
         </Text>
         <TouchableOpacity style={styles.button} onPress={handleLetsStart}>
-          <Text style={styles.buttonText}>Let&apos;s Start</Text>
+          <Text style={styles.buttonText}>Commencer</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
