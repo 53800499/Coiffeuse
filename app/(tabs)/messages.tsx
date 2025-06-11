@@ -1,5 +1,6 @@
 /** @format */
 
+import { Header } from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -111,6 +112,7 @@ export default function MessagesScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}>
       {/* Header */}
+      <Header />
       <View style={styles.header}>
         <Text style={styles.title}>Messages</Text>
         <TouchableOpacity style={styles.searchButton}>

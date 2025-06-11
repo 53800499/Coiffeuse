@@ -1,5 +1,6 @@
 /** @format */
 
+import { Header } from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -17,13 +18,13 @@ import ProductCard from "../../components/ProductCard";
 import ServiceCard from "../../components/ServiceCard";
 
 interface Category {
-  id: string;
+  id: number;
   name: string;
   image: any;
 }
 
 interface Product {
-  id: string;
+  id: number;
   name: string;
   description: string;
   rating: number;
@@ -45,7 +46,7 @@ const services = [
   {
     id: 2,
     title: "Coupe Homme",
-    description: "Coupe et coiffage pour homme",
+    description: "Coupe et coiffage professionnelle pour homme",
     price: 25,
     duration: 30,
     image: require("../../assets/images/service-2.jpg")
@@ -126,16 +127,16 @@ const HomeScreen = () => {
     <TouchableOpacity
       style={[
         styles.categoryItem,
-        selectedCategory === item.id && styles.selectedCategory
+        selectedCategory === item.name && styles.selectedCategory
       ]}
       onPress={() => {
-        setSelectedCategory(item.id);
+        setSelectedCategory(item.name);
       }}>
       <Image source={item.image} style={styles.categoryImage} />
       <Text
         style={[
           styles.categoryText,
-          selectedCategory === item.id && styles.selectedCategoryText
+          selectedCategory === item.name && styles.selectedCategoryText
         ]}>
         {item.name}
       </Text>
@@ -178,167 +179,113 @@ const HomeScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => console.log("Menu pressed")}>
-          <Ionicons name="menu" size={30} color="#333" />
-        </TouchableOpacity>
-        <View>
-          <Text style={styles.greeting}>Bonjour</Text>
-          <Text style={styles.userName}>Doe John</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.profileImageContainer}
-          onPress={() => console.log("Profile pressed")}>
-          <Image
-            source={require("../../assets/placeholder-profile.png")}
-            style={styles.profileImage}
+    <View style={styles.fullScreenContainer}>
+      <Header />
+
+      <ScrollView style={styles.contentScrollView}>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <Ionicons
+            name="search"
+            size={20}
+            color="#666"
+            style={styles.searchIcon}
           />
-        </TouchableOpacity>
-      </View>
-
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons
-          name="search"
-          size={20}
-          color="#666"
-          style={styles.searchIcon}
-        />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Rechercher un produit..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholderTextColor="#666"
-        />
-      </View>
-
-      {/* Banner */}
-      <View style={styles.banner}>
-        <View style={styles.bannerTextContainer}>
-          <Text style={styles.bannerTitle}>Offres Spéciales</Text>
-          <Text style={styles.bannerSubtitle}>
-            Jusqu&apos;à 50% de réduction
-          </Text>
-          <TouchableOpacity
-            style={styles.bannerButton}
-            onPress={() => console.log("Promo pressed")}>
-            <Text style={styles.bannerButtonText}>Découvrir</Text>
-          </TouchableOpacity>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Rechercher un produit..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholderTextColor="#666"
+          />
         </View>
-        <Image
-          source={require("../../assets/placeholder-banner.png")}
-          style={styles.bannerImage}
-        />
-      </View>
 
-      {/* Section Services */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Nos Services</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.servicesContainer}>
-          {services.map((service) => (
-            <View key={service.id} style={styles.serviceCard as ViewStyle}>
-              <ServiceCard {...service} />
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* Section Catégories de Produits */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Catégories de Produits</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.categoriesContainer}>
-          <TouchableOpacity
-            style={[
-              styles.categoryItem,
-              selectedCategory === "Tous" && styles.selectedCategory
-            ]}
-            onPress={() => setSelectedCategory("Tous")}>
-            <Text
-              style={[
-                styles.categoryText,
-                selectedCategory === "Tous" && styles.selectedCategoryText
-              ]}>
-              Tous
+        {/* Banner */}
+        <View style={styles.banner}>
+          <View style={styles.bannerTextContainer}>
+            <Text style={styles.bannerTitle}>Offres Spéciales</Text>
+            <Text style={styles.bannerSubtitle}>
+              Jusqu&apos;à 50% de réduction
             </Text>
-          </TouchableOpacity>
-          {categories.map((category) => (
             <TouchableOpacity
-              key={category.id}
+              style={styles.bannerButton}
+              onPress={() => console.log("Promo pressed")}>
+              <Text style={styles.bannerButtonText}>Découvrir</Text>
+            </TouchableOpacity>
+          </View>
+          <Image
+            source={require("../../assets/placeholder-banner.png")}
+            style={styles.bannerImage}
+          />
+        </View>
+
+        {/* Section Services */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Nos Services</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.servicesContainer}>
+            {services.map((service) => (
+              <View key={service.id} style={styles.serviceCard as ViewStyle}>
+                <ServiceCard {...service} />
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Section Catégories */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Catégories</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.categoriesContainer}>
+            <TouchableOpacity
               style={[
                 styles.categoryItem,
-                selectedCategory === category.name && styles.selectedCategory
+                selectedCategory === "Tous" && styles.selectedCategory
               ]}
-              onPress={() => setSelectedCategory(category.name)}>
-              <Image source={category.image} style={styles.categoryImage} />
+              onPress={() => setSelectedCategory("Tous")}>
               <Text
                 style={[
                   styles.categoryText,
-                  selectedCategory === category.name &&
-                    styles.selectedCategoryText
+                  selectedCategory === "Tous" && styles.selectedCategoryText
                 ]}>
-                {category.name}
+                Tous
               </Text>
             </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* Section Produits */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Produits</Text>
-        <View style={styles.productsContainer}>
-          {filteredProducts.map((product) => (
-            <View key={product.id} style={styles.productCard as ViewStyle}>
-              <ProductCard {...product} />
-            </View>
-          ))}
+            {categories.map((category) => (
+              <React.Fragment key={category.id}>
+                {renderCategoryItem({ item: category })}
+              </React.Fragment>
+            ))}
+          </ScrollView>
         </View>
-      </View>
-    </ScrollView>
+
+        {/* Section Produits */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Produits</Text>
+          <View style={styles.productsGrid}>
+            {filteredProducts.map((product) => (
+              <View key={product.id} style={styles.productCard as ViewStyle}>
+                <ProductCard {...product} />
+              </View>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  fullScreenContainer: {
     flex: 1,
     backgroundColor: "#f5f5f5"
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-    backgroundColor: "#fff"
-  },
-  greeting: {
-    fontSize: 16,
-    color: "#666"
-  },
-  userName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333"
-  },
-  profileImageContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: "hidden"
-  },
-  profileImage: {
-    width: "100%",
-    height: "100%"
+  contentScrollView: {
+    flex: 1
   },
   searchContainer: {
     flexDirection: "row",
@@ -399,13 +346,15 @@ const styles = StyleSheet.create({
     height: "100%"
   },
   section: {
-    padding: 16
+    marginBottom: 20,
+    paddingHorizontal: 20
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
+    marginBottom: 15,
     color: "#333",
-    marginBottom: 16
+    fontFamily: "Poppins-SemiBold"
   },
   servicesContainer: {
     marginHorizontal: -16,
@@ -416,8 +365,9 @@ const styles = StyleSheet.create({
     marginRight: 16
   },
   categoriesContainer: {
-    marginHorizontal: -16,
-    paddingHorizontal: 16
+    flexDirection: "row",
+    marginBottom: 10,
+    paddingVertical: 5
   },
   categoryItem: {
     alignItems: "center",
@@ -442,14 +392,14 @@ const styles = StyleSheet.create({
   selectedCategoryText: {
     color: "#fff"
   },
-  productsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between"
-  },
   productCard: {
     width: "48%",
     marginBottom: 16
+  },
+  productsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between"
   },
   productItem: {
     flexDirection: "row",

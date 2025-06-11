@@ -39,7 +39,7 @@ export default function ServiceCard({
           {description}
         </Text>
         <View style={styles.footer}>
-          <Text style={styles.price}>{price}€</Text>
+          <Text style={styles.price}>{price}FCFA</Text>
           <Text style={styles.duration}>{duration} min</Text>
         </View>
       </View>

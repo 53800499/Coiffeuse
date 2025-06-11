@@ -40,7 +40,7 @@ export default function ProductCard({
           {description}
         </Text>
         <View style={styles.footer}>
-          <Text style={styles.price}>{price}€</Text>
+          <Text style={styles.price}>{price}FCFA</Text>
           <TouchableOpacity style={styles.addButton}>
             <Ionicons name="add-circle-outline" size={24} color="#FF6347" />
           </TouchableOpacity>

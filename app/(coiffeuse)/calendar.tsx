@@ -1,6 +1,5 @@
 /** @format */
 
-import { Header } from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -12,8 +11,10 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { Calendar } from "react-native-calendars";
 import { useAppointments } from "../context/AppointmentsContext";
-import { fonts } from "../theme/fonts";
+import { fonts, fontSizes } from "../theme/fonts";
+import { Header } from "@/components/header";
 
 interface Appointment {
   id: string;
@@ -33,9 +34,25 @@ interface Appointment {
 export default function CalendarScreen() {
   const router = useRouter();
   const { appointments, cancelAppointment } = useAppointments();
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
+
+  const markedDates = appointments.reduce((acc, appointment) => {
+    if (
+      appointment.status === "pending" ||
+      appointment.status === "confirmed"
+    ) {
+      acc[appointment.date] = {
+        marked: true,
+        dotColor: "#FF6347"
+      };
+    }
+    return acc;
+  }, {} as { [key: string]: { marked: boolean; dotColor: string } });
 
   const handleCancelAppointment = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -51,7 +68,7 @@ export default function CalendarScreen() {
   };
 
   const handleBookNewAppointment = () => {
-    router.push("/select-service");
+    router.push("/select-product");
   };
 
   const renderAppointment = (appointment: Appointment) => (
@@ -128,7 +145,8 @@ export default function CalendarScreen() {
 
   const filteredAppointments = appointments.filter(
     (appointment) =>
-      appointment.status === "pending" || appointment.status === "confirmed"
+      appointment.date === selectedDate &&
+      (appointment.status === "pending" || appointment.status === "confirmed")
   );
 
   return (
@@ -137,7 +155,7 @@ export default function CalendarScreen() {
 
       <View style={styles.header}>
         <Text style={[styles.title, { fontFamily: fonts.semiBold }]}>
-          Vos Rendez-vous à venir
+          Rendez-vous
         </Text>
         <TouchableOpacity
           style={styles.addButton}
@@ -146,10 +164,30 @@ export default function CalendarScreen() {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.calendarContainer}>
+        <Calendar
+          onDayPress={(day) => setSelectedDate(day.dateString)}
+          markedDates={{
+            ...markedDates,
+            [selectedDate]: {
+              selected: true,
+              marked: markedDates[selectedDate]?.marked,
+              dotColor: "#FF6347"
+            }
+          }}
+          theme={{
+            todayTextColor: "#FF6347",
+            selectedDayBackgroundColor: "#FF6347",
+            selectedDayTextColor: "#fff",
+            dotColor: "#FF6347"
+          }}
+        />
+      </View>
+
       <View style={styles.appointmentsContainer}>
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { fontFamily: fonts.medium }]}>
-            Rendez-vous
+            Rendez-vous du {new Date(selectedDate).toLocaleDateString("fr-FR")}
           </Text>
         </View>
 
@@ -163,7 +201,7 @@ export default function CalendarScreen() {
                   styles.noAppointmentsText,
                   { fontFamily: fonts.regular }
                 ]}>
-                Aucun rendez-vous à venir
+                Aucun rendez-vous pour cette date
               </Text>
               <TouchableOpacity
                 style={styles.bookButton}
@@ -212,13 +250,19 @@ export default function CalendarScreen() {
                     styles.confirmButtonText,
                     { fontFamily: fonts.medium }
                   ]}>
-                  Oui
+                  Oui, annuler
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
+
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={handleBookNewAppointment}>
+        <Ionicons name="add" size={30} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -226,114 +270,109 @@ export default function CalendarScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8"
+    backgroundColor: "#f8f8f8",
+    paddingTop: 40
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 20,
     paddingBottom: 10,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0"
+    backgroundColor: "white"
   },
   title: {
-    fontSize: 24,
+    fontSize: fontSizes["2xl"],
     color: "#333"
   },
   addButton: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: "#E0F7FA"
+    padding: 5
   },
   calendarContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    marginHorizontal: 15,
-    marginTop: 15,
-    marginBottom: 10,
+    backgroundColor: "white",
     padding: 10,
+    marginBottom: 10
+  },
+  appointmentsContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20
+  },
+  sectionTitle: {
+    fontSize: fontSizes.lg,
+    color: "#333"
+  },
+  appointmentCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 15,
+    marginBottom: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3
   },
-  appointmentsContainer: {
-    flex: 1,
-    paddingHorizontal: 15,
-    paddingTop: 10
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10
-  },
-  sectionTitle: {
-    fontSize: 18,
-    color: "#333"
-  },
-  appointmentCard: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1
-  },
   appointmentTimeContainer: {
-    flexDirection: "column",
-    alignItems: "center",
-    marginRight: 10
+    marginRight: 15,
+    alignItems: "center"
   },
   timeBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFEDE0",
-    borderRadius: 5,
+    backgroundColor: "#FFF5F5",
+    paddingHorizontal: 10,
     paddingVertical: 5,
-    paddingHorizontal: 8,
-    marginBottom: 5
+    borderRadius: 20,
+    marginBottom: 8
   },
   appointmentTime: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     color: "#FF6347",
-    marginLeft: 5
+    marginLeft: 4
   },
   statusBadge: {
-    borderRadius: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12
   },
   statusText: {
-    fontSize: 12
+    fontSize: fontSizes.xs,
+    textTransform: "uppercase"
   },
   appointmentDetails: {
-    flex: 1,
-    marginRight: 10
+    flex: 1
   },
   serviceName: {
-    fontSize: 16,
-    marginBottom: 5
+    fontSize: fontSizes.base,
+    color: "#333",
+    marginBottom: 6
   },
   stylistContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5
+    marginBottom: 8
   },
   specialistName: {
-    fontSize: 14,
+    fontSize: fontSizes.sm,
     color: "#666",
-    marginLeft: 5
+    marginLeft: 4
   },
   priceContainer: {
     flexDirection: "row",
@@ -341,89 +380,101 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   appointmentPrice: {
-    fontSize: 16,
-    color: "#333"
+    fontSize: fontSizes.base,
+    color: "#FF6347"
   },
   durationBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F0F0F0",
-    borderRadius: 5,
-    paddingVertical: 3,
-    paddingHorizontal: 6
+    backgroundColor: "#F5F5F5",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12
   },
   durationText: {
-    fontSize: 12,
+    fontSize: fontSizes.xs,
     color: "#666",
-    marginLeft: 3
+    marginLeft: 4
   },
   appointmentActions: {
-    flexDirection: "column",
-    alignItems: "center"
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 10
   },
   actionButton: {
     padding: 8,
-    borderRadius: 5,
-    marginBottom: 5
+    marginLeft: 5,
+    backgroundColor: "#F5F5F5",
+    borderRadius: 20,
+    width: 36,
+    height: 36,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2
   },
   paymentButton: {
-    backgroundColor: "#FFEDE0"
+    backgroundColor: "#FFF5F5"
   },
   cancelButton: {
-    backgroundColor: "#FFEDED"
+    backgroundColor: "#FFF5F5"
   },
   noAppointments: {
     alignItems: "center",
-    marginTop: 50
+    padding: 20
   },
   noAppointmentsText: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: "#666",
     marginBottom: 20
   },
   bookButton: {
     backgroundColor: "#FF6347",
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 25
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20
   },
   bookButtonText: {
     color: "#fff",
-    fontSize: 16
+    fontSize: fontSizes.base
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center"
   },
   modalContent: {
-    backgroundColor: "#fff",
-    borderRadius: 15,
+    backgroundColor: "white",
+    borderRadius: 20,
     padding: 20,
     width: "80%",
     alignItems: "center"
   },
   modalTitle: {
-    fontSize: 20,
-    marginBottom: 15,
-    color: "#333"
+    fontSize: fontSizes.xl,
+    color: "#333",
+    marginBottom: 10
   },
   modalText: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
+    color: "#666",
     textAlign: "center",
-    marginBottom: 20,
-    color: "#666"
+    marginBottom: 20
   },
   modalButtons: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     width: "100%"
   },
   modalButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10
+    flex: 1,
+    padding: 15,
+    borderRadius: 10,
+    marginHorizontal: 5
   },
   confirmButton: {
     backgroundColor: "#FF6347"
@@ -431,9 +482,26 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     color: "#fff"
   },
+  floatingButton: {
+    position: "absolute",
+    right: 20,
+    bottom: 20,
+    backgroundColor: "#FF6347",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
   modalButtonText: {
-    fontSize: 16,
+    fontSize: fontSizes.base,
     color: "#333",
-    textAlign: "center"
+    textAlign: "center",
+    fontFamily: fonts.medium
   }
 });

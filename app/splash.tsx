@@ -1,7 +1,7 @@
 /** @format */
 
 import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   ImageBackground,
   StyleSheet,
@@ -9,30 +9,10 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { authService } from "../services/authService";
 
 const SplashScreen = () => {
   const router = useRouter();
   const backgroundImage = require("../assets/salon-background.jpg");
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const user = await authService.getCurrentUser();
-        if (user) {
-          if (user.role === "coiffeuse") {
-            router.replace("/(coiffeuse)");
-          } else {
-            router.replace("/(tabs)");
-          }
-        }
-      } catch (error) {
-        console.error("Erreur de vérification d'authentification:", error);
-      }
-    };
-
-    checkAuth();
-  }, []);
 
   const handleLetsStart = () => {
     router.push("/auth");

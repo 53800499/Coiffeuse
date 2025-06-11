@@ -15,6 +15,7 @@ import {
 import Avatar from "../components/Avatar";
 import { useUser } from "../context/UserContext";
 import { fonts, fontSizes } from "../theme/fonts";
+import { Header } from "@/components/header";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -107,6 +108,8 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
+      <Header />
+
       <Animated.View
         style={[
           styles.header,
