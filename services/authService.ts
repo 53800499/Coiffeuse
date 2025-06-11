@@ -29,26 +29,46 @@ class AuthService {
 
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
-      // TODO: Replace with actual API call
-      const response = await fetch('http://your-api-url/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email, password}),
-      });
-
-      if (!response.ok) {
-        throw new Error('Invalid credentials');
+      // Vérification des identifiants prédéfinis
+      if (email === 'client@gmail.com' && password === '12345678') {
+        const user: User = {
+          id: 1,
+          nom: 'Client',
+          prenom: 'Test',
+          email: 'client@gmail.com',
+          tel: '',
+          role: 'client'
+        };
+        const response: LoginResponse = {
+          user,
+          token: 'client-token'
+        };
+        this.currentUser = user;
+        await AsyncStorage.setItem('user', JSON.stringify(user));
+        await AsyncStorage.setItem('token', response.token);
+        return response;
+      } else if (email === 'coiffeuse@gmail.com' && password === '12345678') {
+        const user: User = {
+          id: 2,
+          nom: 'Coiffeuse',
+          prenom: 'Test',
+          email: 'coiffeuse@gmail.com',
+          tel: '',
+          role: 'coiffeuse'
+        };
+        const response: LoginResponse = {
+          user,
+          token: 'coiffeuse-token'
+        };
+        this.currentUser = user;
+        await AsyncStorage.setItem('user', JSON.stringify(user));
+        await AsyncStorage.setItem('token', response.token);
+        return response;
       }
 
-      const data: LoginResponse = await response.json();
-      this.currentUser = data.user;
-      await AsyncStorage.setItem('user', JSON.stringify(data.user));
-      await AsyncStorage.setItem('token', data.token);
-      return data;
+      throw new Error('Identifiants invalides');
     } catch (error) {
-      throw new Error('Login failed');
+      throw new Error('Échec de la connexion');
     }
   }
 
@@ -58,7 +78,7 @@ class AuthService {
       await AsyncStorage.removeItem('token');
       this.currentUser = null;
     } catch (error) {
-      throw new Error('Logout failed');
+      throw new Error('Échec de la déconnexion');
     }
   }
 
@@ -81,6 +101,14 @@ class AuthService {
 
   isAuthenticated(): boolean {
     return this.currentUser !== null;
+  }
+
+  isCoiffeuse(): boolean {
+    return this.currentUser?.role === 'coiffeuse';
+  }
+
+  isClient(): boolean {
+    return this.currentUser?.role === 'client';
   }
 }
 

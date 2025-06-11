@@ -1,6 +1,5 @@
 /** @format */
 
-import { Ionicons } from "@expo/vector-icons"; // Pour l'icône de checkbox (optionnel)
 import { useRouter } from "expo-router"; // Importer useRouter
 import React, { useState } from "react";
 import {
@@ -12,6 +11,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { authService } from "../services/authService";
 
 // Vous devrez probablement réutiliser la même image de fond ou une version légèrement différente (plus floue) ici
 const backgroundImage = require("../assets/salon-background.jpg"); // Assurez-vous que le chemin est correct
@@ -19,37 +19,39 @@ const backgroundImage = require("../assets/salon-background.jpg"); // Assurez-vo
 const AuthScreen = () => {
   const router = useRouter(); // Obtenir l'instance du router
   const [isLoginView, setIsLoginView] = useState(true); // État pour basculer entre Login et Sign-up
-
-  // États pour les champs de formulaire
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
 
   // Fonctions pour basculer la vue
-  const switchToSignup = () => setIsLoginView(false);
-  const switchToLogin = () => setIsLoginView(true);
+  const switchToSignup = () => {
+    setIsLoginView(false);
+    setError("");
+  };
+  const switchToLogin = () => {
+    setIsLoginView(true);
+    setError("");
+  };
 
-  // TODO: Implémenter la logique de connexion et d'inscription
-  const handleLogin = () => {
-    console.log("Login attempted with:", { email, password });
-    // TODO: Appeler votre service de connexion ici
-    // Si la connexion est réussie :
-    router.replace("/(tabs)"); // Rediriger vers la page d'accueil (mise en page des onglets)
+  const handleLogin = async () => {
+    try {
+      setError("");
+      const response = await authService.login(email, password);
+      if (response.user.role === "coiffeuse") {
+        router.replace("/(coiffeuse)");
+      } else {
+        router.replace("/(tabs)");
+      }
+    } catch (error) {
+      setError("Identifiants invalides. Veuillez réessayer.");
+    }
   };
 
   const handleSignup = () => {
-    console.log("Signup attempted with:", {
-      name,
-      email,
-      password,
-      confirmPassword,
-      rememberMe
-    });
-    // TODO: Appeler votre service d'inscription ici
-    // Si l'inscription est réussie, vous pourriez rediriger l'utilisateur (par exemple, vers l'écran de connexion ou directement vers l'accueil si votre flow le permet)
-    // router.replace('/auth'); // Exemple: rediriger vers l'écran de connexion après inscription
+    setError("L'inscription n'est pas disponible pour le moment.");
   };
 
   return (
@@ -89,6 +91,12 @@ const AuthScreen = () => {
             </TouchableOpacity>
           </View>
 
+          {error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : null}
+
           {/* Contenu du formulaire (Login ou Sign-up) */}
           {isLoginView ? (
             // Formulaire de connexion (Login)
@@ -116,7 +124,7 @@ const AuthScreen = () => {
               {/* Lien Forgot Password? */}
               <TouchableOpacity>
                 <Text style={styles.forgotPasswordText}>
-                  Mot de passe oublier
+                  Mot de passe oublié
                 </Text>
               </TouchableOpacity>
 
@@ -129,61 +137,9 @@ const AuthScreen = () => {
             // Formulaire d'inscription (Sign-up)
             <View style={styles.formContainer}>
               <Text style={styles.formTitle}>S{"'"}inscrire</Text>
-
-              <TextInput
-                style={styles.input}
-                placeholder="Nom"
-                placeholderTextColor="#888"
-                autoCapitalize="words"
-                value={name}
-                onChangeText={setName}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                placeholderTextColor="#888"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Mot de passe"
-                placeholderTextColor="#888"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Confirmer le mot de passe"
-                placeholderTextColor="#888"
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-              />
-
-              {/* Checkbox Remember Me? */}
-              <TouchableOpacity
-                style={styles.rememberMeContainer}
-                onPress={() => setRememberMe(!rememberMe)}>
-                <View
-                  style={[
-                    styles.checkbox,
-                    rememberMe && styles.checkedCheckbox
-                  ]}>
-                  {rememberMe && (
-                    <Ionicons name="checkmark" size={18} color="white" />
-                  )}
-                </View>
-                <Text style={styles.rememberMeText}>Remember Me?</Text>
-              </TouchableOpacity>
-
-              {/* Bouton Sign-up */}
-              <TouchableOpacity style={styles.button} onPress={handleSignup}>
-                <Text style={styles.buttonText}>S{"'"}inscrire</Text>
-              </TouchableOpacity>
+              <Text style={styles.disabledMessage}>
+                L{"'"}inscription n{"'"}est pas disponible pour le moment.
+              </Text>
             </View>
           )}
         </View>
@@ -211,7 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    width: "100%", // Assurer que le conteneur prend toute la largeur pour centrer le formulaire,
+    width: "100%" // Assurer que le conteneur prend toute la largeur pour centrer le formulaire,
   },
   switchButtonContainer: {
     flexDirection: "row",
@@ -308,6 +264,24 @@ const styles = StyleSheet.create({
   rememberMeText: {
     fontSize: 16,
     color: "#333"
+  },
+  errorContainer: {
+    width: "100%",
+    backgroundColor: "rgba(255, 0, 0, 0.1)",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20
+  },
+  errorText: {
+    color: "#FF0000",
+    textAlign: "center",
+    fontSize: 14
+  },
+  disabledMessage: {
+    color: "#666",
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 20
   }
 });
 

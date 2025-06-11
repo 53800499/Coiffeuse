@@ -7,10 +7,11 @@ import {
   Poppins_700Bold,
   useFonts
 } from "@expo-google-fonts/poppins";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { View } from "react-native";
+import { authService } from "../services/authService";
 import { AppointmentsProvider } from "./context/AppointmentsContext";
 import { UserProvider } from "./context/UserContext";
 
@@ -23,6 +24,24 @@ export default function Layout() {
     "Poppins-SemiBold": Poppins_600SemiBold,
     "Poppins-Bold": Poppins_700Bold
   });
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = await authService.getCurrentUser();
+      if (user) {
+        if (user.role === "coiffeuse") {
+          router.replace("/(coiffeuse)");
+        } else {
+          router.replace("/(tabs)");
+        }
+      } else {
+        router.replace("/auth");
+      }
+    };
+    checkAuth();
+  }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -45,6 +64,8 @@ export default function Layout() {
             }}>
             <Stack.Screen name="splash" options={{ title: "Splash" }} />
             <Stack.Screen name="auth" options={{ title: "Authentication" }} />
+            <Stack.Screen name="(tabs)" options={{ title: "Client" }} />
+            <Stack.Screen name="(coiffeuse)" options={{ title: "Coiffeuse" }} />
           </Stack>
         </View>
       </AppointmentsProvider>
