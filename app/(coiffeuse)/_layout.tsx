@@ -1,5 +1,5 @@
-/** @format */
-
+ /** @format */
+/*
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { authService } from "../../services/authService";
@@ -20,7 +20,7 @@ export default function CoiffeuseLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         animation: "slide_from_right"
       }}>
       <Stack.Screen name="index" options={{ title: "Tableau de bord" }} />
@@ -29,5 +29,72 @@ export default function CoiffeuseLayout() {
       <Stack.Screen name="services" options={{ title: "Services" }} />
       <Stack.Screen name="profile" options={{ title: "Profil" }} />
     </Stack>
+  );
+}
+ */
+/** @format */
+
+import { Ionicons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { Tabs } from "expo-router";
+import React from "react";
+
+export default function CoiffeuseLayout() {
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#FF6347",
+        tabBarInactiveTintColor: "#888",
+        tabBarShowLabel: true,
+        headerShown: false,
+        tabBarStyle: {
+          height: 80,
+          paddingBottom: 5,
+          paddingTop: 5
+        }
+      }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null
+        }}
+      />
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Accueil",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home" size={24} color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="calendar"
+        options={{
+          title: "Calendrier",
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="calendar" size={24} color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: "Messages",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="chatbubble" size={24} color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="getion"
+        options={{
+          title: "Gestion",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="person" size={24} color={color} />
+          )
+        }}
+      />
+    </Tabs>
   );
 }

@@ -12,9 +12,7 @@ import {
   View
 } from "react-native";
 import { Calendar } from "react-native-calendars";
-import { useAppointments } from "../context/AppointmentsContext";
 import { fonts, fontSizes } from "../theme/fonts";
-import { Header } from "@/components/header";
 
 interface Appointment {
   id: string;
@@ -31,9 +29,55 @@ interface Appointment {
   };
 }
 
+// Données de rendez-vous fictives pour la démonstration
+const demoAppointments: Appointment[] = [
+  {
+    id: "1",
+    date: "2025-06-11",
+    time: "10:00",
+    service: "Coupe de cheveux",
+    status: "pending",
+    price: "20€",
+    duration: "30min",
+    stylist: {
+      id: "a",
+      name: "Jean Dupont",
+      image: "https://randomuser.me/api/portraits/men/1.jpg"
+    }
+  },
+  {
+    id: "2",
+    date: "2025-11-06",
+    time: "11:00",
+    service: "Coloration",
+    status: "confirmed",
+    price: "50€",
+    duration: "60min",
+    stylist: {
+      id: "b",
+      name: "Marie Curie",
+      image: "https://randomuser.me/api/portraits/women/2.jpg"
+    }
+  },
+  {
+    id: "3",
+    date: "2025-06-12",
+    time: "09:00",
+    service: "Brushing",
+    status: "completed",
+    price: "30€",
+    duration: "45min",
+    stylist: {
+      id: "a",
+      name: "Jean Dupont",
+      image: "https://randomuser.me/api/portraits/men/1.jpg"
+    }
+  }
+];
+
 export default function CalendarScreen() {
   const router = useRouter();
-  const { appointments, cancelAppointment } = useAppointments();
+  const [appointments, setAppointments] = useState(demoAppointments);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -68,7 +112,39 @@ export default function CalendarScreen() {
   };
 
   const handleBookNewAppointment = () => {
-    router.push("/select-product");
+    router.push("/select-service");
+  };
+
+  const handleAccept = (appointmentId: string) => {
+    // Assimulation : change le status à "confirmed"
+    updateStatus(appointmentId, "confirmed");
+  };
+
+  const handleReject = (appointmentId: string) => {
+    // Assimulation : change le status à "cancelled"
+    updateStatus(appointmentId, "cancelled");
+  };
+
+  const handlePostpone = (appointmentId: string) => {
+    // Assimulation : change le status à "pending" (ou affiche une alerte)
+    updateStatus(appointmentId, "pending");
+    alert("Le rendez-vous a été reporté !");
+  };
+
+  const updateStatus = (
+    appointmentId: string,
+    newStatus: Appointment["status"]
+  ) => {
+    setAppointments((prev) =>
+      prev.map((app) =>
+        app.id === appointmentId ? { ...app, status: newStatus } : app
+      )
+    );
+  };
+
+  // Pour annuler :
+  const cancelAppointment = (appointmentId: string) => {
+    updateStatus(appointmentId, "cancelled");
   };
 
   const renderAppointment = (appointment: Appointment) => (
@@ -125,20 +201,30 @@ export default function CalendarScreen() {
       </View>
       <View style={styles.appointmentActions}>
         {appointment.status === "pending" && (
-          <TouchableOpacity
-            style={[styles.actionButton, styles.paymentButton]}
-            onPress={() => {
-              // Ici, vous pouvez ajouter la logique de paiement MTN MoMo
-              alert("Paiement MTN MoMo en cours...");
-            }}>
-            <Ionicons name="wallet" size={20} color="#FF6347" />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: "#E8F5E9" }]}
+              onPress={() => handleAccept(appointment.id)}>
+              <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: "#FFEBEE" }]}
+              onPress={() => handleReject(appointment.id)}>
+              <Ionicons name="close-circle" size={20} color="#FF3B30" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: "#FFFDE7" }]}
+              onPress={() => handlePostpone(appointment.id)}>
+              <Ionicons name="time" size={20} color="#FF9800" />
+            </TouchableOpacity>
+          </>
         )}
-        <TouchableOpacity
-          style={[styles.actionButton, styles.cancelButton]}
-          onPress={() => handleCancelAppointment(appointment)}>
-          <Ionicons name="close-circle" size={20} color="#FF6347" />
-        </TouchableOpacity>
+        {appointment.status === "confirmed" && (
+          <Text style={{ color: "#4CAF50", fontWeight: "bold" }}>Accepté</Text>
+        )}
+        {appointment.status === "cancelled" && (
+          <Text style={{ color: "#FF3B30", fontWeight: "bold" }}>Rejeté</Text>
+        )}
       </View>
     </View>
   );
@@ -151,8 +237,6 @@ export default function CalendarScreen() {
 
   return (
     <View style={styles.container}>
-      <Header />
-
       <View style={styles.header}>
         <Text style={[styles.title, { fontFamily: fonts.semiBold }]}>
           Rendez-vous
