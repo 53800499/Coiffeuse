@@ -133,7 +133,7 @@ export default function CalendarScreen() {
 
   return (
     <View style={styles.container}>
-      <Header />
+      {/* <Header /> */}
 
       <View style={styles.header}>
         <Text style={[styles.title, { fontFamily: fonts.semiBold }]}>
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 70,
     paddingBottom: 10,
     backgroundColor: "#fff",
     borderBottomWidth: 1,

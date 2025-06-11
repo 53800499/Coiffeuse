@@ -124,7 +124,7 @@ export default function MessagesScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}>
-      <Header />
+      {/* <Header /> */}
       <View style={styles.header}>
         <Text style={styles.title}>Messages</Text>
         <TouchableOpacity style={styles.searchButton}>

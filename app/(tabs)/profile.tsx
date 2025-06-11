@@ -1,11 +1,12 @@
 /** @format */
 
+import { Header } from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
   Animated,
-  ImageBackground,
   Platform,
   StyleSheet,
   Text,
@@ -15,7 +16,6 @@ import {
 import Avatar from "../components/Avatar";
 import { useUser } from "../context/UserContext";
 import { fonts, fontSizes } from "../theme/fonts";
-import { Header } from "@/components/header";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -118,14 +118,31 @@ export default function ProfileScreen() {
             opacity: headerOpacity
           }
         ]}>
-        <ImageBackground
-          source={require("../../assets/images/profile-bg.jpg")}
+        <LinearGradient
+          colors={["#FF6347", "#FFB88C"]}
           style={styles.headerBackground}
-          blurRadius={3}>
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}>
           <View style={styles.headerOverlay} />
           <View style={styles.headerContent}>
-            <Animated.View style={{ transform: [{ scale: avatarScale }] }}>
-              <Avatar size={120} image={user?.profileImage} name={user?.name} />
+            <Animated.View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                transform: [{ scale: avatarScale }]
+              }}>
+              <View style={styles.avatarWrapper}>
+                <Avatar
+                  size={120}
+                  name={user?.name}
+                />
+                <TouchableOpacity
+                  style={styles.cameraIcon}
+                  onPress={() => router.push("/edit-profile")}
+                  activeOpacity={0.7}>
+                  <Ionicons name="camera" size={22} color="#fff" />
+                </TouchableOpacity>
+              </View>
             </Animated.View>
             <Text style={[styles.name, { fontFamily: fonts.semiBold }]}>
               {user?.name || "Utilisateur"}
@@ -133,17 +150,8 @@ export default function ProfileScreen() {
             <Text style={[styles.email, { fontFamily: fonts.regular }]}>
               {user?.email || "email@example.com"}
             </Text>
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => router.push("/edit-profile")}>
-              <Ionicons name="pencil" size={16} color="#FFFFFF" />
-              <Text
-                style={[styles.editButtonText, { fontFamily: fonts.medium }]}>
-                Modifier le profil
-              </Text>
-            </TouchableOpacity>
           </View>
-        </ImageBackground>
+        </LinearGradient>
       </Animated.View>
 
       <Animated.ScrollView
@@ -249,7 +257,9 @@ const styles = StyleSheet.create({
   },
   headerBackground: {
     flex: 1,
-    width: "100%"
+    width: "100%",
+    paddingBottom: 20,
+    paddingHorizontal: 16
   },
   headerOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -259,20 +269,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 40
+    paddingTop: 20
   },
   name: {
     fontSize: fontSizes["2xl"],
     color: "#fff",
-    marginTop: 15,
+    marginTop: 5,
     textShadowColor: "rgba(0, 0, 0, 0.3)",
     textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3
+    textShadowRadius: 3,
+    fontFamily: fonts.semiBold
   },
   email: {
     fontSize: fontSizes.base,
     color: "#fff",
-    marginTop: 5,
     textShadowColor: "rgba(0, 0, 0, 0.3)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3
@@ -413,5 +423,33 @@ const styles = StyleSheet.create({
     color: "#FF3B30",
     fontSize: fontSizes.base,
     marginLeft: 8
+  },
+  avatarWrapper: {
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    borderWidth: 4,
+    borderColor: "#FF6347",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 6,
+    marginBottom: 10,
+    position: "relative"
+  },
+  cameraIcon: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    backgroundColor: "#FF6347",
+    borderRadius: 20,
+    padding: 6,
+    borderWidth: 2,
+    borderColor: "#fff",
+    elevation: 3
   }
 });

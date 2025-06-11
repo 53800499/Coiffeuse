@@ -20,7 +20,7 @@ export default function CoiffeuseLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         animation: "slide_from_right"
       }}>
       <Stack.Screen name="index" options={{ title: "Tableau de bord" }} />
