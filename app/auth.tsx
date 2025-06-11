@@ -197,12 +197,14 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     width: "100%",
-    backgroundColor: "white", // Fond blanc pour le formulaire
-    borderRadius: 10,
+    backgroundColor: "white",
+    borderRadius: 15,
     padding: 20,
-    alignItems: "center",
-    shadowColor: "#000", // Ajouter une ombre pour la profondeur
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5
@@ -211,69 +213,49 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#333" // Couleur du titre du formulaire
+    textAlign: "center",
+    color: "#333"
   },
   input: {
     width: "100%",
-    padding: 15,
-    marginBottom: 15,
+    height: 50,
     borderWidth: 1,
     borderColor: "#ddd",
-    borderRadius: 5,
-    fontSize: 16
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    fontSize: 16,
+    backgroundColor: "#f9f9f9"
+  },
+  button: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#FF6347",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold"
   },
   forgotPasswordText: {
     color: "#FF6347",
+    textAlign: "right",
     marginBottom: 20,
-    textDecorationLine: "underline"
+    fontSize: 14
   },
-  button: {
-    backgroundColor: "#FF6347",
-    paddingVertical: 15,
-    paddingHorizontal: 50,
-    borderRadius: 25,
-    width: "100%", // Bouton pleine largeur
-    alignItems: "center",
-    marginTop: 10 // Espace au-dessus du bouton
-  },
-  buttonText: {
-    fontSize: 18,
-    color: "white",
-    fontWeight: "bold"
-  },
-  rememberMeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+  errorContainer: {
+    backgroundColor: "#ffebee",
+    padding: 10,
+    borderRadius: 8,
     marginBottom: 20,
     width: "100%"
   },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: "#888",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10
-  },
-  checkedCheckbox: {
-    backgroundColor: "#FF6347",
-    borderColor: "#FF6347"
-  },
-  rememberMeText: {
-    fontSize: 16,
-    color: "#333"
-  },
-  errorContainer: {
-    width: "100%",
-    backgroundColor: "rgba(255, 0, 0, 0.1)",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20
-  },
   errorText: {
-    color: "#FF0000",
+    color: "#d32f2f",
     textAlign: "center",
     fontSize: 14
   },

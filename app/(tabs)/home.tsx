@@ -2,18 +2,19 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
-  Dimensions,
-  FlatList,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  ViewStyle
 } from "react-native";
+import ProductCard from "../../components/ProductCard";
+import ServiceCard from "../../components/ServiceCard";
 
 interface Category {
   id: string;
@@ -31,98 +32,104 @@ interface Product {
   categoryId: string;
 }
 
-const categories: Category[] = [
+// Données de test pour les services
+const services = [
   {
-    id: "1",
-    name: "Coiffures",
-    image: require("../../assets/placeholder-category.png")
+    id: 1,
+    title: "Coupe Femme",
+    description: "Coupe et brushing professionnel pour femme",
+    price: 35,
+    duration: 60,
+    image: require("../../assets/images/service-1.jpg")
   },
   {
-    id: "2",
-    name: "Soins",
-    image: require("../../assets/placeholder-category.png")
+    id: 2,
+    title: "Coupe Homme",
+    description: "Coupe et coiffage pour homme",
+    price: 25,
+    duration: 30,
+    image: require("../../assets/images/service-2.jpg")
   },
   {
-    id: "3",
-    name: "Coloration",
-    image: require("../../assets/placeholder-category.png")
-  },
-  {
-    id: "4",
-    name: "Mèches",
-    image: require("../../assets/placeholder-category.png")
+    id: 3,
+    title: "Coloration",
+    description: "Coloration professionnelle avec produits de qualité",
+    price: 45,
+    duration: 90,
+    image: require("../../assets/images/service-3.jpg")
   }
 ];
 
-const products: Product[] = [
+// Données de test pour les catégories de produits
+const categories = [
   {
-    id: "1",
+    id: 1,
+    name: "Shampoings",
+    image: require("../../assets/images/category-1.jpg")
+  },
+  {
+    id: 2,
+    name: "Soins",
+    image: require("../../assets/images/category-2.jpg")
+  },
+  {
+    id: 3,
+    name: "Coiffants",
+    image: require("../../assets/images/category-3.jpg")
+  },
+  {
+    id: 4,
+    name: "Accessoires",
+    image: require("../../assets/images/category-4.jpg")
+  }
+];
+
+// Données de test pour les produits
+const products = [
+  {
+    id: 1,
     name: "Shampoing Hydratant",
-    description: "Shampoing nourrissant pour cheveux secs et abîmés",
-    rating: 4.5,
-    image: require("../../assets/placeholder-product.png"),
-    price: "24.99 €",
-    categoryId: "2"
+    description: "Shampoing professionnel pour cheveux secs",
+    price: 15.99,
+    image: require("../../assets/images/product-1.jpg"),
+    category: "Shampoings"
   },
   {
-    id: "2",
-    name: "Masque Capillaire",
-    description: "Masque réparateur intensif pour cheveux colorés",
-    rating: 4.8,
-    image: require("../../assets/placeholder-product.png"),
-    price: "29.99 €",
-    categoryId: "2"
+    id: 2,
+    name: "Masque Réparateur",
+    description: "Masque intensif pour cheveux abîmés",
+    price: 24.99,
+    image: require("../../assets/images/product-2.jpg"),
+    category: "Soins"
   },
   {
-    id: "3",
-    name: "Sérum Brillance",
-    description: "Sérum lissant pour cheveux brillants et soyeux",
-    rating: 4.2,
-    image: require("../../assets/placeholder-product.png"),
-    price: "19.99 €",
-    categoryId: "2"
-  },
-  {
-    id: "4",
-    name: "Coloration Brune",
-    description: "Teinture capillaire brune naturelle",
-    rating: 4.6,
-    image: require("../../assets/placeholder-product.png"),
-    price: "15.99 €",
-    categoryId: "3"
-  },
-  {
-    id: "5",
-    name: "Mèches Blondes",
-    description: "Mèches blondes naturelles",
-    rating: 4.7,
-    image: require("../../assets/placeholder-product.png"),
-    price: "39.99 €",
-    categoryId: "4"
+    id: 3,
+    name: "Gel Coiffant",
+    description: "Gel fixant longue tenue",
+    price: 12.99,
+    image: require("../../assets/images/product-3.jpg"),
+    category: "Coiffants"
   }
 ];
 
 const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
-    null
-  );
+  const [selectedCategory, setSelectedCategory] = useState("Tous");
   const router = useRouter();
 
-  const filteredProducts = React.useMemo(() => {
-    return selectedCategory
-      ? products.filter((product) => product.categoryId === selectedCategory)
-      : products;
-  }, [selectedCategory]);
+  const filteredProducts =
+    selectedCategory === "Tous"
+      ? products
+      : products.filter((product) => product.category === selectedCategory);
 
   const renderCategoryItem = ({ item }: { item: Category }) => (
     <TouchableOpacity
       style={[
         styles.categoryItem,
-        selectedCategory === item.id && styles.selectedCategoryItem
+        selectedCategory === item.id && styles.selectedCategory
       ]}
       onPress={() => {
-        setSelectedCategory(selectedCategory === item.id ? null : item.id);
+        setSelectedCategory(item.id);
       }}>
       <Image source={item.image} style={styles.categoryImage} />
       <Text
@@ -171,7 +178,7 @@ const HomeScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => console.log("Menu pressed")}>
@@ -227,51 +234,74 @@ const HomeScreen = () => {
         />
       </View>
 
-      {/* Categories */}
+      {/* Section Services */}
       <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Catégories</Text>
-          <TouchableOpacity
-            onPress={() => {
-              setSelectedCategory(null);
-              console.log("View all categories");
-            }}>
-            <Text style={styles.viewAllText}>Voir tout</Text>
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          data={categories}
-          renderItem={renderCategoryItem}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
+        <Text style={styles.sectionTitle}>Nos Services</Text>
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesListContent}
-        />
+          style={styles.servicesContainer}>
+          {services.map((service) => (
+            <View key={service.id} style={styles.serviceCard as ViewStyle}>
+              <ServiceCard {...service} />
+            </View>
+          ))}
+        </ScrollView>
       </View>
 
-      {/* Products */}
+      {/* Section Catégories de Produits */}
       <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>
-            {selectedCategory
-              ? `Produits - ${
-                  categories.find((c) => c.id === selectedCategory)?.name
-                }`
-              : "Tous les Produits"}
-          </Text>
-          <TouchableOpacity onPress={() => console.log("View all products")}>
-            <Text style={styles.viewAllText}>Voir tout</Text>
+        <Text style={styles.sectionTitle}>Catégories de Produits</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoriesContainer}>
+          <TouchableOpacity
+            style={[
+              styles.categoryItem,
+              selectedCategory === "Tous" && styles.selectedCategory
+            ]}
+            onPress={() => setSelectedCategory("Tous")}>
+            <Text
+              style={[
+                styles.categoryText,
+                selectedCategory === "Tous" && styles.selectedCategoryText
+              ]}>
+              Tous
+            </Text>
           </TouchableOpacity>
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category.id}
+              style={[
+                styles.categoryItem,
+                selectedCategory === category.name && styles.selectedCategory
+              ]}
+              onPress={() => setSelectedCategory(category.name)}>
+              <Image source={category.image} style={styles.categoryImage} />
+              <Text
+                style={[
+                  styles.categoryText,
+                  selectedCategory === category.name &&
+                    styles.selectedCategoryText
+                ]}>
+                {category.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Section Produits */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Produits</Text>
+        <View style={styles.productsContainer}>
+          {filteredProducts.map((product) => (
+            <View key={product.id} style={styles.productCard as ViewStyle}>
+              <ProductCard {...product} />
+            </View>
+          ))}
         </View>
-        <FlatList
-          data={filteredProducts}
-          renderItem={renderProductItem}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.productRow}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={false}
-        />
       </View>
     </ScrollView>
   );
@@ -280,19 +310,20 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
-    paddingHorizontal: 15,
-    paddingTop: 40
+    backgroundColor: "#f5f5f5"
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
+    backgroundColor: "#fff"
   },
   greeting: {
     fontSize: 16,
-    color: "#888"
+    color: "#666"
   },
   userName: {
     fontSize: 20,
@@ -312,43 +343,40 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    paddingHorizontal: 15,
+    backgroundColor: "#f5f5f5",
+    marginHorizontal: 20,
     marginBottom: 20,
-    height: 45,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
+    borderRadius: 10,
+    paddingHorizontal: 15
   },
   searchIcon: {
     marginRight: 10
   },
   searchInput: {
     flex: 1,
+    height: 45,
     fontSize: 16,
     color: "#333"
   },
   banner: {
-    height: 180,
+    flexDirection: "row",
+    marginHorizontal: 20,
+    marginBottom: 20,
     backgroundColor: "#FF6347",
     borderRadius: 15,
-    marginBottom: 25,
     overflow: "hidden",
-    flexDirection: "row",
-    padding: 20
+    height: 150
   },
   bannerTextContainer: {
     flex: 1,
+    padding: 20,
     justifyContent: "center"
   },
   bannerTitle: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
-    marginBottom: 8
+    marginBottom: 5
   },
   bannerSubtitle: {
     fontSize: 16,
@@ -367,80 +395,85 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   bannerImage: {
-    width: 150,
-    height: 150,
-    position: "absolute",
-    right: 0,
-    bottom: 0
+    width: "40%",
+    height: "100%"
   },
   section: {
-    marginBottom: 25
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 15
+    padding: 16
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#333"
+    color: "#333",
+    marginBottom: 16
   },
-  viewAllText: {
-    color: "#FF6347",
-    fontSize: 14
+  servicesContainer: {
+    marginHorizontal: -16,
+    paddingHorizontal: 16
   },
-  categoriesListContent: {
-    paddingRight: 15
+  serviceCard: {
+    width: 300,
+    marginRight: 16
+  },
+  categoriesContainer: {
+    marginHorizontal: -16,
+    paddingHorizontal: 16
   },
   categoryItem: {
-    width: 100,
-    marginRight: 15,
     alignItems: "center",
+    marginRight: 16,
     padding: 8,
-    borderRadius: 10
+    borderRadius: 8,
+    backgroundColor: "#fff"
   },
-  selectedCategoryItem: {
+  selectedCategory: {
     backgroundColor: "#FF6347"
   },
   categoryImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     marginBottom: 8
   },
   categoryText: {
     fontSize: 14,
-    color: "#333",
-    textAlign: "center"
+    color: "#333"
   },
   selectedCategoryText: {
     color: "#fff"
   },
-  productRow: {
-    justifyContent: "space-between",
-    marginBottom: 15
+  productsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between"
+  },
+  productCard: {
+    width: "48%",
+    marginBottom: 16
   },
   productItem: {
-    width: (Dimensions.get("window").width - 45) / 2,
+    flexDirection: "row",
     backgroundColor: "#fff",
-    borderRadius: 15,
-    padding: 10,
+    marginHorizontal: 20,
+    marginBottom: 15,
+    borderRadius: 10,
+    overflow: "hidden",
+    elevation: 2,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
+    shadowRadius: 3
   },
   productImage: {
-    width: "100%",
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 10
+    width: 100,
+    height: 100
   },
   productInfo: {
-    padding: 5
+    flex: 1,
+    padding: 10
   },
   productName: {
     fontSize: 16,
@@ -455,7 +488,7 @@ const styles = StyleSheet.create({
   productDescription: {
     fontSize: 14,
     color: "#666",
-    marginBottom: 8
+    marginBottom: 5
   },
   productPrice: {
     fontSize: 16,
