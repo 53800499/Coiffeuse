@@ -2,7 +2,7 @@
 
 import { Header } from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -37,7 +37,8 @@ const dummyMessages: Message[] = [
     sender: "Moi",
     content: "Merci pour la confirmation !",
     time: "10:31",
-    isMe: true
+    isMe: true,
+    avatar: "🧑"
   },
   {
     id: "3",
@@ -60,6 +61,7 @@ const dummyMessages: Message[] = [
 export default function MessagesScreen() {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState(dummyMessages);
+  const flatListRef = useRef<FlatList>(null);
 
   const sendMessage = () => {
     if (newMessage.trim() === "") return;
@@ -72,11 +74,15 @@ export default function MessagesScreen() {
         hour: "2-digit",
         minute: "2-digit"
       }),
-      isMe: true
+      isMe: true,
+      avatar: "🧑"
     };
 
-    setMessages([...messages, message]);
+    setMessages([message, ...messages]);
     setNewMessage("");
+    setTimeout(() => {
+      flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }, 100);
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
@@ -86,7 +92,9 @@ export default function MessagesScreen() {
         item.isMe ? styles.myMessageContainer : styles.theirMessageContainer
       ]}>
       {!item.isMe && item.avatar && (
-        <Text style={styles.avatar}>{item.avatar}</Text>
+        <View style={styles.avatarCircle}>
+          <Text style={styles.avatar}>{item.avatar}</Text>
+        </View>
       )}
       <View
         style={[
@@ -103,6 +111,11 @@ export default function MessagesScreen() {
         </Text>
         <Text style={styles.messageTime}>{item.time}</Text>
       </View>
+      {item.isMe && (
+        <View style={styles.avatarCircle}>
+          <Text style={styles.avatar}>🧑</Text>
+        </View>
+      )}
     </View>
   );
 
@@ -111,7 +124,6 @@ export default function MessagesScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}>
-      {/* Header */}
       <Header />
       <View style={styles.header}>
         <Text style={styles.title}>Messages</Text>
@@ -120,16 +132,16 @@ export default function MessagesScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Messages List */}
       <FlatList
+        ref={flatListRef}
         data={messages}
         renderItem={renderMessage}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.messagesList}
-        inverted={false}
+        inverted = {false} // Affiche les messages du plus récent en bas
+        showsVerticalScrollIndicator={false}
       />
 
-      {/* Input Area */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -138,8 +150,12 @@ export default function MessagesScreen() {
           onChangeText={setNewMessage}
           multiline
           maxLength={500}
+          placeholderTextColor="#aaa"
         />
-        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+        <TouchableOpacity
+          style={[styles.sendButton, { opacity: newMessage.trim() ? 1 : 0.5 }]}
+          onPress={sendMessage}
+          disabled={!newMessage.trim()}>
           <Ionicons
             name="send"
             size={24}
@@ -184,28 +200,50 @@ const styles = StyleSheet.create({
     alignItems: "flex-end"
   },
   myMessageContainer: {
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    alignSelf: "flex-end"
   },
   theirMessageContainer: {
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
+    alignSelf: "flex-start"
+  },
+  avatarCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 4,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2
   },
   avatar: {
-    fontSize: 24,
-    marginRight: 8
+    fontSize: 20
   },
   messageBubble: {
-    maxWidth: "80%",
-    padding: 12,
+    maxWidth: "75%",
+    padding: 14,
     borderRadius: 20,
-    marginHorizontal: 5
+    marginHorizontal: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2
   },
   myMessageBubble: {
     backgroundColor: "#FF6347",
     borderBottomRightRadius: 5
   },
   theirMessageBubble: {
-    backgroundColor: "white",
-    borderBottomLeftRadius: 5
+    backgroundColor: "#fff",
+    borderBottomLeftRadius: 5,
+    borderWidth: 1,
+    borderColor: "#eee"
   },
   senderName: {
     fontSize: 12,
