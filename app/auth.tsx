@@ -12,6 +12,7 @@ import {
   View
 } from "react-native";
 import { authService } from "../services/authService";
+import { Ionicons } from "@expo/vector-icons"; // Pour l'icône de checkbox (optionnel)
 
 // Vous devrez probablement réutiliser la même image de fond ou une version légèrement différente (plus floue) ici
 const backgroundImage = require("../assets/salon-background.jpg"); // Assurez-vous que le chemin est correct
@@ -51,7 +52,16 @@ const AuthScreen = () => {
   };
 
   const handleSignup = () => {
-    setError("L'inscription n'est pas disponible pour le moment.");
+    console.log("Signup attempted with:", {
+      name,
+      email,
+      password,
+      confirmPassword,
+      rememberMe
+    });
+    // TODO: Appeler votre service d'inscription ici
+    // Si l'inscription est réussie, vous pourriez rediriger l'utilisateur (par exemple, vers l'écran de connexion ou directement vers l'accueil si votre flow le permet)
+    router.replace('/auth'); // Exemple: rediriger vers l'écran de connexion après inscription
   };
 
   return (
@@ -137,9 +147,61 @@ const AuthScreen = () => {
             // Formulaire d'inscription (Sign-up)
             <View style={styles.formContainer}>
               <Text style={styles.formTitle}>S{"'"}inscrire</Text>
-              <Text style={styles.disabledMessage}>
-                L{"'"}inscription n{"'"}est pas disponible pour le moment.
-              </Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Nom"
+                placeholderTextColor="#888"
+                autoCapitalize="words"
+                value={name}
+                onChangeText={setName}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#888"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Mot de passe"
+                placeholderTextColor="#888"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Confirmer le mot de passe"
+                placeholderTextColor="#888"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+
+              {/* Checkbox Remember Me? */}
+              <TouchableOpacity
+                style={styles.rememberMeContainer}
+                onPress={() => setRememberMe(!rememberMe)}>
+                <View
+                  style={[
+                    styles.checkbox,
+                    rememberMe && styles.checkedCheckbox
+                  ]}>
+                  {rememberMe && (
+                    <Ionicons name="checkmark" size={18} color="white" />
+                  )}
+                </View>
+                <Text style={styles.rememberMeText}>Remember Me?</Text>
+              </TouchableOpacity>
+
+              {/* Bouton Sign-up */}
+              <TouchableOpacity style={styles.button} onPress={handleSignup}>
+                <Text style={styles.buttonText}>S{"'"}inscrire</Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
@@ -264,6 +326,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     marginTop: 20
+  },
+  rememberMeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+    width: "100%"
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: "#888",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10
+  },
+  checkedCheckbox: {
+    backgroundColor: "#FF6347",
+    borderColor: "#FF6347"
+  },
+  rememberMeText: {
+    fontSize: 16,
+    color: "#333"
   }
 });
 

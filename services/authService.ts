@@ -34,7 +34,7 @@ class AuthService {
         const user: User = {
           id: 1,
           nom: 'Client',
-          prenom: 'Test',
+          prenom: 'Alice',
           email: 'client@gmail.com',
           tel: '',
           role: 'client'
@@ -51,7 +51,7 @@ class AuthService {
         const user: User = {
           id: 2,
           nom: 'Coiffeuse',
-          prenom: 'Test',
+          prenom: 'Salon',
           email: 'coiffeuse@gmail.com',
           tel: '',
           role: 'coiffeuse'
