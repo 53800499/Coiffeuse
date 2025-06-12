@@ -33,8 +33,8 @@ class AuthService {
       if (email === 'client@gmail.com' && password === '12345678') {
         const user: User = {
           id: 1,
-          nom: 'Client',
-          prenom: 'Alice',
+          nom: 'PlanifyHair',
+          prenom: 'Bienvenue !',
           email: 'client@gmail.com',
           tel: '',
           role: 'client'
