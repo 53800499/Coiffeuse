@@ -27,15 +27,15 @@ const services: Service[] = [
     id: 1,
     title: "Coupe Femme",
     description: "Coupe et brushing professionnel pour femme",
-    price: 35,
+    price: 3500,
     duration: 60,
-    image: require("../assets/images/service-1.jpg")
+    image: require("../assets/images/coupe femme.jpg")
   },
   {
     id: 2,
     title: "Coupe Homme",
     description: "Coupe et coiffage professionnelle pour homme",
-    price: 25,
+    price: 2500,
     duration: 30,
     image: require("../assets/images/service-2.jpg")
   },
@@ -43,9 +43,62 @@ const services: Service[] = [
     id: 3,
     title: "Coloration",
     description: "Coloration professionnelle avec produits de qualité",
-    price: 45,
+    price: 6500,
     duration: 90,
-    image: require("../assets/images/service-3.jpg")
+    image: require("../assets/images/60.png")
+  }
+  ,
+  {
+    id: 4,
+    title: " Coupe garçon",
+    description: "Coupe rapide et soignée pour garçons, adaptée à tous les styles.",
+    price: 500,
+    duration: 35,
+    image: require("../assets/images/couupe garcon.jpg")
+  }
+  ,
+  {
+    id: 5,
+    title: "Soin capillaire profond",
+    description: "Traitement nourrissant en profondeur pour cheveux secs ou abîmés.",
+    price: 4500,
+    duration: 60,
+    image: require("../assets/images/soin profond.jpg")
+  }
+  ,
+  {
+    id: 6,
+    title: " Extension de cils",
+    description: "Pose de cils pour un regard plus intense et naturellement allongé.",
+    price: 9500,
+    duration: 90,
+    image: require("../assets/images/Extension de cils.jpg")
+  }  ,
+  {
+    id: 7,
+    title: "Défrisage",
+    description: "Lissage durable des cheveux pour un rendu souple et sans frisottis.",
+    price: 5000,
+    duration: 45,
+    image: require("../assets/images/Défrisage.jpg")
+  }
+  ,
+  {
+    id: 8,
+    title: "Taille de barbe",
+    description: "Coloration professionnelle avec produits de qualité",
+    price: 1000,
+    duration: 30,
+    image: require("../assets/images/Taille de barbe.jpg")
+  }
+  ,
+  {
+    id: 9,
+    title: " Tresse afro",
+    description: "Réalisation de tresses traditionnelles ou modernes selon vos envies.",
+    price: 4500,
+    duration: 90,
+    image: require("../assets/images/Tresse afro.jpg")
   }
 ];
 
