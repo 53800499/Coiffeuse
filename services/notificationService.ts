@@ -182,7 +182,7 @@ class NotificationService {
       {
         id: 2,
         titre: 'Paiement reçu',
-        message: 'Votre paiement de 30€ a été reçu avec succès.',
+        message: 'Votre paiement de 3000 FCFA a été reçu avec succès.',
         date: '2024-03-15T09:30:00Z',
         lu: true,
         type: 'payment',

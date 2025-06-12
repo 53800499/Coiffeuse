@@ -39,7 +39,7 @@ const services = [
     id: 1,
     title: "Coupe Femme",
     description: "Coupe et brushing professionnel pour femme",
-    price: 35,
+    price: 3500,
     duration: 60,
     image: require("../../assets/images/service-1.jpg")
   },
@@ -47,7 +47,7 @@ const services = [
     id: 2,
     title: "Coupe Homme",
     description: "Coupe et coiffage professionnelle pour homme",
-    price: 25,
+    price: 2500,
     duration: 30,
     image: require("../../assets/images/service-2.jpg")
   },
@@ -55,7 +55,7 @@ const services = [
     id: 3,
     title: "Coloration",
     description: "Coloration professionnelle avec produits de qualité",
-    price: 45,
+    price: 4500,
     duration: 90,
     image: require("../../assets/images/service-3.jpg")
   }
@@ -66,22 +66,22 @@ const categories = [
   {
     id: 1,
     name: "Shampoings",
-    image: require("../../assets/images/category-1.jpg")
+    image: require("../../assets/images/sha.jpg")
   },
   {
     id: 2,
     name: "Soins",
-    image: require("../../assets/images/category-2.jpg")
+    image: require("../../assets/images/soin.jpg")
   },
   {
     id: 3,
     name: "Coiffants",
-    image: require("../../assets/images/category-3.jpg")
+    image: require("../../assets/images/coiffant.jpg")
   },
   {
     id: 4,
     name: "Accessoires",
-    image: require("../../assets/images/category-4.jpg")
+    image: require("../../assets/images/ace.jpg")
   }
 ];
 

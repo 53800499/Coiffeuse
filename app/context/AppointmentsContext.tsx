@@ -40,12 +40,12 @@ export function AppointmentsProvider({
       date: "2024-03-20",
       time: "14:00",
       status: "confirmed",
-      price: "30€",
+      price: "3000 FCFA",
       duration: "30 min",
       stylist: {
         id: "1",
         name: "Marie Dupont",
-        image: "https://example.com/marie.jpg"
+        image: "../../assets/images/coupe femme.jpg"
       }
     },
     {
@@ -54,12 +54,12 @@ export function AppointmentsProvider({
       date: "2024-03-25",
       time: "10:30",
       status: "pending",
-      price: "60€",
+      price: "6000 FCFA",
       duration: "1h30",
       stylist: {
         id: "2",
         name: "Sophie Martin",
-        image: "https://example.com/sophie.jpg"
+        image: "../../assets/images/cooupure.jpg"
       }
     }
   ]);

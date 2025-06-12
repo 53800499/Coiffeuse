@@ -52,7 +52,7 @@ const services: Service[] = [
     id: 4,
     title: " Coupe garçon",
     description: "Coupe rapide et soignée pour garçons, adaptée à tous les styles.",
-    price: 500,
+    price: 1500,
     duration: 35,
     image: require("../assets/images/couupe garcon.jpg")
   }
@@ -125,7 +125,7 @@ export default function SelectService() {
         <Text style={styles.serviceName}>{item.title}</Text>
         <Text style={styles.serviceDescription}>{item.description}</Text>
         <View style={styles.serviceDetails}>
-          <Text style={styles.price}>{item.price} €</Text>
+          <Text style={styles.price}>{item.price} FCFA</Text>
           <Text style={styles.duration}>{item.duration} min</Text>
         </View>
       </View>

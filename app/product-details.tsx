@@ -54,7 +54,7 @@ export default function ProductDetails() {
       {/* Informations du produit */}
       <View style={styles.infoContainer}>
         <Text style={styles.category}>{params.category}</Text>
-        <Text style={styles.price}>15.99€</Text>
+        <Text style={styles.price}>1599 <FCFA></FCFA> </Text>
         <Text style={styles.description}>
           Shampoing professionnel pour cheveux secs. Formule enrichie en huiles
           naturelles pour une hydratation intense et durable.

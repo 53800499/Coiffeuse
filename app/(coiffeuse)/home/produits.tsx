@@ -132,7 +132,7 @@ export default function ProduitsScreen() {
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.category}>{item.category}</Text>
         <Text style={styles.desc}>{item.description}</Text>
-        <Text style={styles.price}>{item.price.toFixed(2)} €</Text>
+        <Text style={styles.price}>{item.price.toFixed(2)} FCFA</Text>
       </View>
       <View style={styles.actions}>
         <TouchableOpacity onPress={() => handleEdit(item)} style={styles.iconBtn}>

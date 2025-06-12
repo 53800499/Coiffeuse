@@ -80,13 +80,13 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     {
       id: "1",
       name: "Coupe de cheveux",
-      price: "30€",
+      price: "3000 FCFA",
       duration: "30 min"
     },
     {
       id: "2",
       name: "Coloration",
-      price: "60€",
+      price: "6000 FCFA",
       duration: "1h30"
     }
   ]);

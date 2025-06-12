@@ -37,12 +37,12 @@ const demoAppointments: Appointment[] = [
     time: "10:00",
     service: "Coupe de cheveux",
     status: "pending",
-    price: "20€",
-    duration: "30min",
+    price: "2000 FCFA",
+    duration: "45min",
     stylist: {
       id: "a",
-      name: "Jean Dupont",
-      image: "https://randomuser.me/api/portraits/men/1.jpg"
+      name: "Betrand OLOUWA",
+      image: "../assets/images/coiffure.jpg"
     }
   },
   {
@@ -51,12 +51,12 @@ const demoAppointments: Appointment[] = [
     time: "11:00",
     service: "Coloration",
     status: "confirmed",
-    price: "50€",
+    price: "5000 FCFA",
     duration: "60min",
     stylist: {
       id: "b",
-      name: "Marie Curie",
-      image: "https://randomuser.me/api/portraits/women/2.jpg"
+      name: "Marie DJOSSA",
+      image: "../assets/images/60.png"
     }
   },
   {
@@ -65,12 +65,12 @@ const demoAppointments: Appointment[] = [
     time: "09:00",
     service: "Brushing",
     status: "completed",
-    price: "30€",
+    price: "3000 FCFA",
     duration: "45min",
     stylist: {
       id: "a",
-      name: "Jean Dupont",
-      image: "https://randomuser.me/api/portraits/men/1.jpg"
+      name: "Betrand OLOUWA",
+      image: "../assets/images/Brushing.jpg"
     }
   }
 ];

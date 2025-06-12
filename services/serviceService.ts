@@ -96,7 +96,7 @@ class ServiceService {
       {
         id: 6,
         nom: 'Manucure',
-        prix: 35,
+        prix: ,
         description: 'Soin des mains et pose de vernis',
         duree: 60,
       },

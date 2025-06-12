@@ -18,15 +18,15 @@ const initialServices = [
     id: 1,
     title: "Coupe Femme",
     description: "Coupe et brushing professionnel pour femme",
-    price: 35,
+    price: 3500,
     duration: 60,
-    image: require("../../../assets/images/service-1.jpg")
+    image: require("../../../assets/images/60.png")
   },
   {
     id: 2,
     title: "Coupe Homme",
     description: "Coupe et coiffage professionnelle pour homme",
-    price: 25,
+    price: 2500,
     duration: 30,
     image: require("../../../assets/images/service-2.jpg")
   },
@@ -34,7 +34,7 @@ const initialServices = [
     id: 3,
     title: "Coloration",
     description: "Coloration professionnelle avec produits de qualité",
-    price: 45,
+    price: 4500,
     duration: 90,
     image: require("../../../assets/images/service-3.jpg")
   }
