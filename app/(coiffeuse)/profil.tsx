@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
     })
   },
   headerBackground: {
+    paddingTop: 40,
     flex: 1,
     width: "100%",
     paddingBottom: 20,
@@ -265,10 +266,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.3)"
   },
   headerContent: {
+    paddingTop: 10,
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 20
   },
   name: {
     fontSize: fontSizes["2xl"],

@@ -59,7 +59,7 @@ export default function CoiffeuseDashboard() {
       title: "Profil",
       icon: "person",
       color: "#9C27B0",
-      route: "/(coiffeuse)/home/profile"
+      route: "/(coiffeuse)/profil"
     }
   ];
 
