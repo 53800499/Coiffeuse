@@ -11,7 +11,7 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-import { authService, User } from "../../services/authService";
+import { authService, User } from "../../../services/authService";
 
 export default function CoiffeuseDashboard() {
   const router = useRouter();
@@ -35,31 +35,31 @@ export default function CoiffeuseDashboard() {
       title: "Rendez-vous",
       icon: "calendar",
       color: "#FF6347",
-      route: "/appointments"
+      route: "/(coiffeuse)/calendar"
     },
     {
       title: "Clients",
       icon: "people",
       color: "#4CAF50",
-      route: "/clients"
+      route: "/(coiffeuse)/home/clients"
     },
     {
       title: "Services",
       icon: "cut",
       color: "#2196F3",
-      route: "/services"
+      route: "/(coiffeuse)/home/services"
     },
     {
       title: "Produits",
       icon: "cube",
       color: "#FF9800",
-      route: "/products"
+      route: "/(coiffeuse)/home/produits"
     },
     {
       title: "Profil",
       icon: "person",
       color: "#9C27B0",
-      route: "/profile"
+      route: "/(coiffeuse)/home/profile"
     }
   ];
 

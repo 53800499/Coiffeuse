@@ -1,6 +1,5 @@
 /** @format */
 
-import { Header } from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -17,7 +16,7 @@ import Avatar from "../components/Avatar";
 import { useUser } from "../context/UserContext";
 import { fonts, fontSizes } from "../theme/fonts";
 
-export default function ProfileScreen() {
+export default function ProfilScreen() {
   const router = useRouter();
   const { user, logout } = useUser();
   const scrollY = React.useRef(new Animated.Value(0)).current;
@@ -108,7 +107,6 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Header />
 
       <Animated.View
         style={[

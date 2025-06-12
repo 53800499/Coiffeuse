@@ -1,4 +1,4 @@
- /** @format */
+/** @format */
 /*
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
@@ -87,9 +87,9 @@ export default function CoiffeuseLayout() {
         }}
       />
       <Tabs.Screen
-        name="getion"
+        name="profil"
         options={{
-          title: "Gestion",
+          title: "Profil",
           tabBarIcon: ({ color }) => (
             <Ionicons name="person" size={24} color={color} />
           )

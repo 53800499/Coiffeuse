@@ -1,7 +1,13 @@
 /** @format */
 
 import React from "react";
-import { Image, View, Text, StyleSheet } from "react-native";
+import {
+  Image,
+  View,
+  Text,
+  StyleSheet,
+  ImageSourcePropType
+} from "react-native";
 
 export default function Avatar({
   size = 120,
@@ -9,9 +15,11 @@ export default function Avatar({
   name
 }: {
   size?: number;
-  image?: string;
+  image?: string | ImageSourcePropType;
   name?: string;
 }) {
+  const isLocalImage = typeof image !== "string";
+
   return (
     <View
       style={[
@@ -20,7 +28,7 @@ export default function Avatar({
       ]}>
       {image ? (
         <Image
-          source={{ uri: image }}
+          source={isLocalImage ? image : { uri: image }}
           style={{ width: size, height: size, borderRadius: size / 2 }}
           resizeMode="cover"
         />
