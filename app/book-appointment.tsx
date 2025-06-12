@@ -90,7 +90,7 @@ export default function BookAppointmentScreen() {
 
     addAppointment(newAppointment);
     Alert.alert("Succès", "Rendez-vous pris avec succès!");
-    router.replace("/calendar"); // Rediriger vers la page du calendrier
+    router.replace("/(tabs)/calendar"); // Rediriger vers la page du calendrier
   };
 
   return (
